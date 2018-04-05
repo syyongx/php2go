@@ -374,7 +374,7 @@ func Addslashes(str string) string {
 }
 
 // stripslashes()
-func Stripslashes(str string) string {
+func Stripslashes(str string) {
 	// TODO
 }
 
@@ -449,17 +449,17 @@ func ParseUrl(str string) (*url.URL, error) {
 	return url.Parse(str)
 }
 
-// url_encode()
+// urlencode()
 func UrlEncode(str string) string {
 	return strings.Replace(url.PathEscape(str), "%20", "+", -1)
 }
 
-// url_decode()
+// urldecode()
 func UrlDecode(str string) (string, error) {
 	return url.PathUnescape(strings.Replace(str, "+", "%20", -1))
 }
 
-// ralurlencode()
+// rawurlencode()
 func Rawurlencode(str string) string {
 	return url.PathEscape(str)
 }
@@ -710,8 +710,8 @@ func Decbin(number int64) string {
 	return strconv.FormatInt(number, 2)
 }
 
-// bin2dec()
-func Bin2dec(str string) (string, error) {
+// bindec()
+func Bindec(str string) (string, error) {
 	i, err := strconv.ParseInt(str, 2, 0)
 	if err != nil {
 		return "", err
