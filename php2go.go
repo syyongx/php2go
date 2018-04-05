@@ -140,7 +140,7 @@ func Strrev(str string) string {
 
 // number_format()
 func NumberFormat() {
-
+	// TODO
 }
 
 // chunk_split()
@@ -217,7 +217,7 @@ func Wordwrap(str string, width uint, br string) string {
 			}
 		}
 	}
-
+	
 	if wordbuf.Len() == 0 {
 		if current+uint(spacebuf.Len()) <= width {
 			spacebuf.WriteTo(buf)
@@ -226,7 +226,6 @@ func Wordwrap(str string, width uint, br string) string {
 		spacebuf.WriteTo(buf)
 		wordbuf.WriteTo(buf)
 	}
-
 	return buf.String()
 }
 
@@ -498,12 +497,12 @@ func ArrayFill(startIndex int, num uint, value interface{}) map[int]interface{} 
 
 // array_flip()
 func ArrayFlip(m map[interface{}]interface{}) map[interface{}]interface{} {
-	newmap := make(map[interface{}]interface{})
+	n := make(map[interface{}]interface{})
 	for i, v := range m {
-		newmap[v] = i
+		n[v] = i
 	}
 
-	return newmap
+	return n
 }
 
 // array_keys()
@@ -619,12 +618,12 @@ func ArrayShift(elements []interface{}) []interface{} {
 
 // array_unshift()
 func ArrayUnshift() {
-
+	// TODO
 }
 
 // array_diff()
 func ArrayDiff(maps ... map[interface{}]interface{}) {
-
+	// TODO
 }
 
 // array_combine()
