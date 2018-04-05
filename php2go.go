@@ -1,3 +1,4 @@
+// php2go functions
 package php2go
 
 import (
@@ -25,18 +26,7 @@ import (
 	"unicode"
 )
 
-// echo
-func Echo(args ...interface{}) {
-	fmt.Print(args...)
-}
-
-// uniqid()
-func Uniqid(prefix string) string {
-	t := time.Now()
-	sec := t.Unix()
-	usec := t.UnixNano() % 0x100000
-	return fmt.Sprintf("%s%08x%05x", prefix, sec, usec);
-}
+//////////// Time Functions ////////////
 
 // time()
 func Timestamp() int64 {
@@ -66,6 +56,8 @@ func Sleep(t int64) {
 func Usleep(t int64) {
 	time.Sleep(time.Duration(t) * time.Microsecond)
 }
+
+//////////// String Functions ////////////
 
 // strpos()
 func Strpos(haystack, needle string, offset int) int {
@@ -366,61 +358,6 @@ func StripTags() {
 
 }
 
-// md5()
-func Md5(str string) string {
-	hash := md5.New()
-	hash.Write([]byte(str))
-	return hex.EncodeToString(hash.Sum(nil))
-}
-
-// md5_file()
-func Md5File(path string) string {
-	data, err := ioutil.ReadFile(path)
-	if err != nil {
-		return ""
-	}
-	hash := md5.New()
-	hash.Write([]byte(data))
-	return hex.EncodeToString(hash.Sum(nil))
-}
-
-// sha1()
-func Sha1(str string) string {
-	hash := sha1.New()
-	hash.Write([]byte(str))
-	return hex.EncodeToString(hash.Sum(nil))
-}
-
-// sha1_file()
-func Sha1File(path string) string {
-	data, err := ioutil.ReadFile(path)
-	if err != nil {
-		return ""
-	}
-	hash := sha1.New()
-	hash.Write([]byte(data))
-	return hex.EncodeToString(hash.Sum(nil))
-}
-
-// crc32()
-func Crc32(str string) uint32 {
-	return crc32.ChecksumIEEE([]byte(str))
-}
-
-// base64_encode()
-func Base64Encode(str string) string {
-	return base64.StdEncoding.EncodeToString([]byte(str))
-}
-
-// base64_decode()
-func Base64Decode(str string) (string, error) {
-	data, err := base64.StdEncoding.DecodeString(str)
-	if err != nil {
-		return "", err
-	}
-	return string(data), nil
-}
-
 // parse_url()
 func ParseUrl(str string) (*url.URL, error) {
 	return url.Parse(str)
@@ -499,191 +436,64 @@ func HtmlEntityDecode(str string) string {
 	return html.UnescapeString(str)
 }
 
-// rand()
-func Rand(min, max int) int {
-	if min > max {
-		panic("min: min mast less than max")
-	}
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	n := r.Intn(math.MaxInt32)
-	return n/((math.MaxInt32+1)/(max-min+1)) + min
+//////////// Hash Functions ////////////
+
+// md5()
+func Md5(str string) string {
+	hash := md5.New()
+	hash.Write([]byte(str))
+	return hex.EncodeToString(hash.Sum(nil))
 }
 
-// round()
-func Round(f float64) float64 {
-	return math.Floor(f + 0.5)
-}
-
-// pi()
-func Pi() float64 {
-	return math.Pi
-}
-
-// max()
-func Max(nums ...float64) float64 {
-	if len(nums) < 2 {
-		panic("nums: the nums is too small")
-	}
-	max := nums[0]
-	for i := 1; i < len(nums); i++ {
-		max = math.Max(max, nums[i])
-	}
-	return max
-}
-
-// min()
-func Min(nums ...float64) float64 {
-	if len(nums) < 2 {
-		panic("nums: the nums is too small")
-	}
-	min := nums[0]
-	for i := 1; i < len(nums); i++ {
-		min = math.Min(min, nums[i])
-	}
-	return min
-}
-
-// file_exists()
-func FileExists(filename string) bool {
-	_, err := os.Stat(filename)
-	if err != nil && os.IsNotExist(err) {
-		return false
-	}
-	return true
-}
-
-// is_file()
-func IsFile(filename string) bool {
-	_, err := os.Stat(filename)
-	if err != nil && os.IsNotExist(err) {
-		return false
-	}
-	return true
-}
-
-// is_dir()
-func IsDir(filename string) (bool, error) {
-	fd, err := os.Stat(filename)
+// md5_file()
+func Md5File(path string) string {
+	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		return false, err
+		return ""
 	}
-	fm := fd.Mode()
-	return fm.IsDir(), nil
+	hash := md5.New()
+	hash.Write([]byte(data))
+	return hex.EncodeToString(hash.Sum(nil))
 }
 
-// filesize()
-func FileSize(filename string) (int64, error) {
-	info, err := os.Stat(filename)
-	if err != nil && os.IsNotExist(err) {
-		return 0, err
-	}
-	return info.Size(), nil
+// sha1()
+func Sha1(str string) string {
+	hash := sha1.New()
+	hash.Write([]byte(str))
+	return hex.EncodeToString(hash.Sum(nil))
 }
 
-// file_put_contents()
-func FilePutContents(filename string, data string, mode os.FileMode) error {
-	return ioutil.WriteFile(filename, []byte(data), mode)
-}
-
-// file_get_contents()
-func FileGetContents(filename string) (string, error) {
-	data, err := ioutil.ReadFile(filename)
-	return string(data), err
-}
-
-// unlink()
-func Unlink(filename string) error {
-	return os.Remove(filename)
-}
-
-// is_readable
-func IsReadable(filename string) bool {
-	_, err := syscall.Open(filename, syscall.O_RDONLY, 0)
+// sha1_file()
+func Sha1File(path string) string {
+	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		return false
+		return ""
 	}
-	return true
+	hash := sha1.New()
+	hash.Write([]byte(data))
+	return hex.EncodeToString(hash.Sum(nil))
 }
 
-// is_writeable()
-func IsWriteable(filename string) bool {
-	_, err := syscall.Open(filename, syscall.O_WRONLY, 0)
+// crc32()
+func Crc32(str string) uint32 {
+	return crc32.ChecksumIEEE([]byte(str))
+}
+
+// base64_encode()
+func Base64Encode(str string) string {
+	return base64.StdEncoding.EncodeToString([]byte(str))
+}
+
+// base64_decode()
+func Base64Decode(str string) (string, error) {
+	data, err := base64.StdEncoding.DecodeString(str)
 	if err != nil {
-		return false
+		return "", err
 	}
-	return true
+	return string(data), nil
 }
 
-// rename()
-func Rename(oldname, newname string) error {
-	return os.Rename(oldname, newname)
-}
-
-// touch()
-func Touch(filename string, ctime, atime int64) (bool, error) {
-	f, err := os.OpenFile(filename, os.O_RDONLY|os.O_CREATE, 0666)
-	if err != nil {
-		return false, err
-	}
-	f.Close()
-	return true, nil
-}
-
-// mkdir()
-func Mkdir(filename string, mode os.FileMode) error {
-	return os.Mkdir(filename, mode)
-}
-
-// getcwd()
-func Getcwd() (string, error) {
-	dir, err := os.Getwd()
-	return dir, err
-}
-
-// realpath()
-func Realpath(path string) (string, error) {
-	return filepath.Abs(path)
-}
-
-// basename()
-func Basename(path string) string {
-	return filepath.Base(path)
-}
-
-// intval()
-func Intval(val interface{}) (int, error) {
-	return strconv.Atoi(fmt.Sprintf("%v", val))
-}
-
-// is_numeric()
-func IsNumeric(val interface{}) bool {
-	switch val.(type) {
-	case int, uint, int8, uint8, int16:
-		return true
-	case uint16, int32, uint32, int64, uint64:
-		return true
-	case float32, float64:
-		return true
-	case complex64, complex128:
-		return true
-	case string:
-		// TODO
-		return false
-	default:
-		return false
-	}
-	return false
-}
-
-// exec()
-func Exec(command string) error {
-	return exec.Command(command).Run()
-}
-
-// print_r()
-func PrintR(val interface{}) {
-	fmt.Print(val)
-}
+//////////// Array(Slice/Map) Functions ////////////
 
 // array_fill()
 func ArrayFill(startIndex int, num uint, value interface{}) map[int]interface{} {
@@ -850,6 +660,52 @@ func Implode(glue string, pieces []string) string {
 	return buf.String()
 }
 
+//////////// Math Functions ////////////
+
+// rand()
+func Rand(min, max int) int {
+	if min > max {
+		panic("min: min mast less than max")
+	}
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	n := r.Intn(math.MaxInt32)
+	return n/((math.MaxInt32+1)/(max-min+1)) + min
+}
+
+// round()
+func Round(f float64) float64 {
+	return math.Floor(f + 0.5)
+}
+
+// pi()
+func Pi() float64 {
+	return math.Pi
+}
+
+// max()
+func Max(nums ...float64) float64 {
+	if len(nums) < 2 {
+		panic("nums: the nums is too small")
+	}
+	max := nums[0]
+	for i := 1; i < len(nums); i++ {
+		max = math.Max(max, nums[i])
+	}
+	return max
+}
+
+// min()
+func Min(nums ...float64) float64 {
+	if len(nums) < 2 {
+		panic("nums: the nums is too small")
+	}
+	min := nums[0]
+	for i := 1; i < len(nums); i++ {
+		min = math.Min(min, nums[i])
+	}
+	return min
+}
+
 // decbin()
 func Decbin(number int64) string {
 	return strconv.FormatInt(number, 2)
@@ -916,6 +772,122 @@ func IsNan(val float64) bool {
 	return math.IsNaN(val)
 }
 
+//////////// File Functions ////////////
+
+// file_exists()
+func FileExists(filename string) bool {
+	_, err := os.Stat(filename)
+	if err != nil && os.IsNotExist(err) {
+		return false
+	}
+	return true
+}
+
+// is_file()
+func IsFile(filename string) bool {
+	_, err := os.Stat(filename)
+	if err != nil && os.IsNotExist(err) {
+		return false
+	}
+	return true
+}
+
+// is_dir()
+func IsDir(filename string) (bool, error) {
+	fd, err := os.Stat(filename)
+	if err != nil {
+		return false, err
+	}
+	fm := fd.Mode()
+	return fm.IsDir(), nil
+}
+
+// filesize()
+func FileSize(filename string) (int64, error) {
+	info, err := os.Stat(filename)
+	if err != nil && os.IsNotExist(err) {
+		return 0, err
+	}
+	return info.Size(), nil
+}
+
+// file_put_contents()
+func FilePutContents(filename string, data string, mode os.FileMode) error {
+	return ioutil.WriteFile(filename, []byte(data), mode)
+}
+
+// file_get_contents()
+func FileGetContents(filename string) (string, error) {
+	data, err := ioutil.ReadFile(filename)
+	return string(data), err
+}
+
+// unlink()
+func Unlink(filename string) error {
+	return os.Remove(filename)
+}
+
+// is_readable
+func IsReadable(filename string) bool {
+	_, err := syscall.Open(filename, syscall.O_RDONLY, 0)
+	if err != nil {
+		return false
+	}
+	return true
+}
+
+// is_writeable()
+func IsWriteable(filename string) bool {
+	_, err := syscall.Open(filename, syscall.O_WRONLY, 0)
+	if err != nil {
+		return false
+	}
+	return true
+}
+
+// rename()
+func Rename(oldname, newname string) error {
+	return os.Rename(oldname, newname)
+}
+
+// touch()
+func Touch(filename string, ctime, atime int64) (bool, error) {
+	f, err := os.OpenFile(filename, os.O_RDONLY|os.O_CREATE, 0666)
+	if err != nil {
+		return false, err
+	}
+	f.Close()
+	return true, nil
+}
+
+// mkdir()
+func Mkdir(filename string, mode os.FileMode) error {
+	return os.Mkdir(filename, mode)
+}
+
+// getcwd()
+func Getcwd() (string, error) {
+	dir, err := os.Getwd()
+	return dir, err
+}
+
+// realpath()
+func Realpath(path string) (string, error) {
+	return filepath.Abs(path)
+}
+
+// basename()
+func Basename(path string) string {
+	return filepath.Base(path)
+}
+
+//////////// Other Functions ////////////
+
+// echo
+func Echo(args ...interface{}) {
+	fmt.Print(args...)
+}
+
 // Ternary expression
 // max := Ternary(a > b, a, b).(int)
 func Ternary(condition bool, trueVal, falseVal interface{}) interface{} {
@@ -923,4 +895,47 @@ func Ternary(condition bool, trueVal, falseVal interface{}) interface{} {
 		return trueVal
 	}
 	return falseVal
+}
+
+// uniqid()
+func Uniqid(prefix string) string {
+	t := time.Now()
+	sec := t.Unix()
+	usec := t.UnixNano() % 0x100000
+	return fmt.Sprintf("%s%08x%05x", prefix, sec, usec);
+}
+
+// exec()
+func Exec(command string) error {
+	return exec.Command(command).Run()
+}
+
+// print_r()
+func PrintR(val interface{}) string {
+	return fmt.Sprint(val)
+}
+
+// intval()
+func Intval(val interface{}) (int, error) {
+	return strconv.Atoi(fmt.Sprintf("%v", val))
+}
+
+// is_numeric()
+func IsNumeric(val interface{}) bool {
+	switch val.(type) {
+	case int, uint, int8, uint8, int16:
+		return true
+	case uint16, int32, uint32, int64, uint64:
+		return true
+	case float32, float64:
+		return true
+	case complex64, complex128:
+		return true
+	case string:
+		// TODO
+		return false
+	default:
+		return false
+	}
+	return false
 }
