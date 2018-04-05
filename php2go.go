@@ -166,11 +166,6 @@ func ChunkSplit(body string, chunklen uint, end string) string {
 	return string(ns)
 }
 
-// strtok()
-func Strtok(str, token string) {
-
-}
-
 // str_word_count()
 func StrWordCount(str string) []string {
 	return strings.Fields(str)
@@ -255,11 +250,11 @@ func Strstr(haystack string, needle string) string {
 	if needle == "" {
 		return ""
 	}
-	index := strings.Index(haystack, needle)
-	if index == -1 {
+	idx := strings.Index(haystack, needle)
+	if idx == -1 {
 		return ""
 	}
-	return haystack[index+len([]byte(needle))-1: ]
+	return haystack[idx+len([]byte(needle))-1: ]
 }
 
 // str_shuffle()
@@ -355,11 +350,6 @@ func Nl2br(str string, isXhtml bool) string {
 	return buf.String()
 }
 
-// strip_tags()
-func StripTags() {
-
-}
-
 // json_encode()
 func JsonEncode(data []byte, val interface{}) error {
 	return json.Unmarshal(data, val)
@@ -372,14 +362,13 @@ func JsonDecode(val interface{}) ([]byte, error) {
 
 // addslashes()
 func Addslashes(str string) string {
-	var n []byte
-	s := []byte("\\")
-	for _, v := range []byte(str) {
-		switch v {
+	var n []rune
+	for _, char := range str {
+		switch char {
 		case '\'', '"', '\\':
-			n = append(n, s...)
+			n = append(n, '\\')
 		}
-		n = append(n, v)
+		n = append(n, char)
 	}
 	return string(n)
 }
@@ -391,14 +380,13 @@ func Stripslashes(str string) string {
 
 // quotemeta()
 func Quotemeta(str string) string {
-	var n []byte
-	s := []byte("\\")
-	for _, v := range []byte(str) {
-		switch v {
+	var n []rune
+	for _, char := range str {
+		switch char {
 		case '.', '+', '\\', '(', '$', ')', '[', '^', ']', '*', '?':
-			n = append(n, s...)
+			n = append(n, '\\')
 		}
-		n = append(n, v)
+		n = append(n, char)
 	}
 	return string(n)
 }
@@ -518,11 +506,6 @@ func ArrayFlip(m map[interface{}]interface{}) map[interface{}]interface{} {
 	return newmap
 }
 
-// array_intersect()
-func ArrayIntersect() {
-
-}
-
 // array_keys()
 func ArrayKeys(elements map[interface{}]interface{}) []interface{} {
 	var keys []interface{}
@@ -542,13 +525,31 @@ func ArrayValues(elements map[interface{}]interface{}) []interface{} {
 }
 
 // array_merge()
-func ArrayMerge() {
-
+func ArrayMerge(ss ...[]interface{}) []interface{} {
+	var s []interface{}
+	for _, v := range ss {
+		s = append(s, v...)
+	}
+	return s
 }
 
 // array_chunk()
-func ArrayChunk() {
-
+func ArrayChunk(s []interface{}, size int) [][]interface{} {
+	if size < 1 {
+		panic("size: cannot be less than 1")
+	}
+	length := len(s)
+	chunks := int(math.Ceil(float64(length) / float64(size)))
+	var n [][]interface{}
+	for i, end := 0, 0; chunks > 0; chunks-- {
+		end = (i + 1) * size
+		if end > length {
+			end = length
+		}
+		n = append(n, s[i*size:end])
+		i ++
+	}
+	return n
 }
 
 // array_pad()
@@ -606,14 +607,14 @@ func ArrayColumn(input map[string]map[string]interface{}, columnKey string) []in
 }
 
 // array_pop()
-// for slice,Map is unordered
+// for slice, map is unordered
 func ArrayPop(elements []interface{}) interface{} {
 	return elements[0:len(elements)-1]
 }
 
 // array_shift()
-// for slice,Map is unordered
-func ArrayShift(elements []interface{}) interface{} {
+// for slice, map is unordered
+func ArrayShift(elements []interface{}) []interface{} {
 	return elements[1:]
 }
 
@@ -653,7 +654,7 @@ func Implode(glue string, pieces []string) string {
 	var buf bytes.Buffer
 	l := len(pieces)
 	for _, str := range pieces {
-		buf.Write([]byte(str))
+		buf.WriteString(str)
 		if l--; l > 0 {
 			buf.WriteString(glue)
 		}
@@ -687,7 +688,7 @@ func Pi() float64 {
 // max()
 func Max(nums ...float64) float64 {
 	if len(nums) < 2 {
-		panic("nums: the nums is too small")
+		panic("nums: the nums length is less than 2")
 	}
 	max := nums[0]
 	for i := 1; i < len(nums); i++ {
@@ -699,7 +700,7 @@ func Max(nums ...float64) float64 {
 // min()
 func Min(nums ...float64) float64 {
 	if len(nums) < 2 {
-		panic("nums: the nums is too small")
+		panic("nums: the nums length is less than 2")
 	}
 	min := nums[0]
 	for i := 1; i < len(nums); i++ {
@@ -938,16 +939,10 @@ func Filemtime(filename string) (int64, error) {
 
 // fgetcsv()
 func Fgetcsv(handle *os.File, length int, delimiter rune) ([][]string, error) {
-	reader := &csv.Reader{
-		Comma: delimiter,
-		r:     handle,
-	}
+	reader := csv.NewReader(handle)
+	reader.Comma = delimiter
+	// TODO length limit
 	return reader.ReadAll()
-}
-
-// fputcsv()
-func Fputcsv(handle *os.File, fields []string, delimiter rune) {
-	
 }
 
 //////////// Variable handling Functions ////////////
@@ -955,65 +950,18 @@ func Fputcsv(handle *os.File, fields []string, delimiter rune) {
 // is_numeric()
 func IsNumeric(val interface{}) bool {
 	switch val.(type) {
-	case int, uint, int8, uint8, int16:
-		return true
-	case uint16, int32, uint32, int64, uint64:
-		return true
+	case int, int8, int16, int32, int64:
+	case uint, uint8, uint16, uint32, uint64:
 	case float32, float64:
-		return true
 	case complex64, complex128:
 		return true
 	case string:
-		// TODO
+		// TODO check string is numeric
 		return false
 	default:
 		return false
 	}
-}
-
-// is_bool()
-func IsBool(val interface{}) bool {
-	switch val.(type) {
-	case bool:
-		return true
-	case string:
-		_, err := strconv.ParseBool(val.(string))
-		return err == nil
-	case int, uint, int32, int64:
-
-	default:
-		return false
-	}
-}
-
-// intval()
-func Intval(val interface{}) (int, error) {
-	return strconv.Atoi(fmt.Sprintf("%v", val))
-}
-
-// floatval()
-func Floatval(val interface{}) (float64, error) {
-	return 0, nil
-}
-
-// boolval()
-func Boolval(val interface{}) (bool) {
-	switch val.(type) {
-	case bool:
-		return true
-	case string:
-		_, err := strconv.ParseBool(val.(string))
-		return err == nil
-	case int, uint, int32, int64:
-
-	default:
-		return false
-	}
-}
-
-// print_r()
-func PrintR(val interface{}) string {
-	return fmt.Sprint(val)
+	return false
 }
 
 //////////// Other Functions ////////////
@@ -1044,11 +992,6 @@ func Exit(status int) {
 // die()
 func Die(status int) {
 	os.Exit(status)
-}
-
-// pack()
-func Pack() {
-
 }
 
 // Ternary expression

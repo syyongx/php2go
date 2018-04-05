@@ -8,6 +8,31 @@ import (
 	"strconv"
 )
 
+func TestTime(t *testing.T) {
+
+}
+
+func TestString(t *testing.T) {
+
+}
+
+func TestArray(t *testing.T) {
+	var s1 = make([]interface{}, 3)
+	s1[0] = "a"
+	s1[1] = "b"
+	s1[2] = "c"
+	tArrayChunk := ArrayChunk(s1, 2)
+	fmt.Println(tArrayChunk)
+}
+
+func TestUrl(t *testing.T) {
+
+}
+
+func TestOther(t *testing.T) {
+
+}
+
 func TestAll(t *testing.T) {
 	taddslashes := Addslashes("'wo'中\"chousha")
 	fmt.Println(taddslashes)
@@ -38,7 +63,6 @@ func TestAll(t *testing.T) {
 	fmt.Println(tbasename)
 	tarrayfill := ArrayFill(-3, 6, "aaa")
 	fmt.Println(tarrayfill)
-	PrintR(tarrayfill)
 	fmt.Println()
 	tarrayrand := ArrayRand([]interface{}{"a", "b", "c"})
 	fmt.Println(tarrayrand)
@@ -67,6 +91,8 @@ func TestAll(t *testing.T) {
 	s1[2] = "c"
 	tarraypad := ArrayPad(s1, -5, 2)
 	fmt.Println(tarraypad)
+	tArrayChunk := ArrayChunk(s1, 2)
+	fmt.Println(tArrayChunk)
 	var s2 = make([]interface{}, 5, 5)
 	s2[0] = "x"
 	tarraycombine := ArrayCombine(s1, s2)
