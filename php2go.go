@@ -664,7 +664,7 @@ func Implode(glue string, pieces []string) string {
 // rand()
 func Rand(min, max int) int {
 	if min > max {
-		panic("min: min mast less than max")
+		panic("min: min cannot be greater than max")
 	}
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	n := r.Intn(math.MaxInt32)
@@ -850,7 +850,7 @@ func Copy(source, dest string) (bool, error) {
 	return true, nil
 }
 
-// is_readable
+// is_readable()
 func IsReadable(filename string) bool {
 	_, err := syscall.Open(filename, syscall.O_RDONLY, 0)
 	if err != nil {
