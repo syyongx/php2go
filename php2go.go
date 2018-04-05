@@ -328,6 +328,7 @@ func Nl2br(str string, isXhtml bool) string {
 		br = []byte("<br>")
 	}
 	skip := false
+	length := len(runes)
 	var buf bytes.Buffer
 	for i, v := range runes {
 		if skip {
@@ -336,7 +337,7 @@ func Nl2br(str string, isXhtml bool) string {
 		}
 		switch v {
 		case n, r:
-			if (i+1 < len(runes)) && (v == r && runes[i+1] == n) || (v == n && runes[i+1] == r) {
+			if (i+1 < length) && (v == r && runes[i+1] == n) || (v == n && runes[i+1] == r) {
 				buf.Write(br)
 				skip = true
 				continue
@@ -408,14 +409,14 @@ func Md5(str string) string {
 }
 
 // md5_file()
-func Md5File(path string) string {
+func Md5File(path string) (string, error) {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		return ""
+		return "", err
 	}
 	hash := md5.New()
 	hash.Write([]byte(data))
-	return hex.EncodeToString(hash.Sum(nil))
+	return hex.EncodeToString(hash.Sum(nil)), nil
 }
 
 // sha1()
@@ -426,14 +427,14 @@ func Sha1(str string) string {
 }
 
 // sha1_file()
-func Sha1File(path string) string {
+func Sha1File(path string) (string, error) {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		return ""
+		return "", err
 	}
 	hash := sha1.New()
 	hash.Write([]byte(data))
-	return hex.EncodeToString(hash.Sum(nil))
+	return hex.EncodeToString(hash.Sum(nil)), nil
 }
 
 // crc32()
