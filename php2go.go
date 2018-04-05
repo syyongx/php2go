@@ -217,7 +217,7 @@ func Wordwrap(str string, width uint, br string) string {
 			}
 		}
 	}
-	
+
 	if wordbuf.Len() == 0 {
 		if current+uint(spacebuf.Len()) <= width {
 			spacebuf.WriteTo(buf)
@@ -374,7 +374,7 @@ func Addslashes(str string) string {
 
 // stripslashes()
 func Stripslashes(str string) string {
-	return ""
+	// TODO
 }
 
 // quotemeta()
@@ -501,7 +501,6 @@ func ArrayFlip(m map[interface{}]interface{}) map[interface{}]interface{} {
 	for i, v := range m {
 		n[v] = i
 	}
-
 	return n
 }
 
@@ -635,7 +634,6 @@ func ArrayCombine(s1, s2 []interface{}) map[interface{}]interface{} {
 	for i, v := range s1 {
 		m[v] = s2[i]
 	}
-
 	return m
 }
 
@@ -657,7 +655,6 @@ func Implode(glue string, pieces []string) string {
 			buf.WriteString(glue)
 		}
 	}
-
 	return buf.String()
 }
 
