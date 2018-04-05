@@ -602,7 +602,6 @@ func ArrayColumn(input map[string]map[string]interface{}, columnKey string) []in
 			res = append(res, v)
 		}
 	}
-
 	return res
 }
 
