@@ -11,7 +11,7 @@ import (
 func TestAll(t *testing.T) {
 	taddslashes := Addslashes("'wo'中\"chousha")
 	fmt.Println(taddslashes)
-	ttimestamp := Timestamp()
+	ttimestamp := Time()
 	fmt.Println(ttimestamp)
 	tmd5 := Md5("123456")
 	fmt.Println(tmd5)

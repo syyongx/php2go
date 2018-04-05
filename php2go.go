@@ -24,12 +24,14 @@ import (
 	"hash/crc32"
 	"html"
 	"unicode"
+	"io"
+	"encoding/csv"
 )
 
-//////////// Time Functions ////////////
+//////////// Date/Time Functions ////////////
 
 // time()
-func Timestamp() int64 {
+func Time() int64 {
 	return time.Now().Unix()
 }
 
@@ -358,31 +360,6 @@ func StripTags() {
 
 }
 
-// parse_url()
-func ParseUrl(str string) (*url.URL, error) {
-	return url.Parse(str)
-}
-
-// url_encode()
-func UrlEncode(str string) string {
-	return strings.Replace(url.PathEscape(str), "%20", "+", -1)
-}
-
-// url_decode()
-func UrlDecode(str string) (string, error) {
-	return url.PathUnescape(strings.Replace(str, "+", "%20", -1))
-}
-
-// ralurlencode()
-func Rawurlencode(str string) string {
-	return url.PathEscape(str)
-}
-
-// rawurldecode()
-func RawurlDecode(str string) (string, error) {
-	return url.PathUnescape(str)
-}
-
 // json_encode()
 func JsonEncode(data []byte, val interface{}) error {
 	return json.Unmarshal(data, val)
@@ -436,8 +413,6 @@ func HtmlEntityDecode(str string) string {
 	return html.UnescapeString(str)
 }
 
-//////////// Hash Functions ////////////
-
 // md5()
 func Md5(str string) string {
 	hash := md5.New()
@@ -477,6 +452,33 @@ func Sha1File(path string) string {
 // crc32()
 func Crc32(str string) uint32 {
 	return crc32.ChecksumIEEE([]byte(str))
+}
+
+//////////// URL Functions ////////////
+
+// parse_url()
+func ParseUrl(str string) (*url.URL, error) {
+	return url.Parse(str)
+}
+
+// url_encode()
+func UrlEncode(str string) string {
+	return strings.Replace(url.PathEscape(str), "%20", "+", -1)
+}
+
+// url_decode()
+func UrlDecode(str string) (string, error) {
+	return url.PathUnescape(strings.Replace(str, "+", "%20", -1))
+}
+
+// ralurlencode()
+func Rawurlencode(str string) string {
+	return url.PathEscape(str)
+}
+
+// rawurldecode()
+func RawurlDecode(str string) (string, error) {
+	return url.PathUnescape(str)
 }
 
 // base64_encode()
@@ -772,7 +774,7 @@ func IsNan(val float64) bool {
 	return math.IsNaN(val)
 }
 
-//////////// File Functions ////////////
+//////////// Filesystem Functions ////////////
 
 // file_exists()
 func FileExists(filename string) bool {
@@ -827,6 +829,30 @@ func Unlink(filename string) error {
 	return os.Remove(filename)
 }
 
+// delete()
+func Delete(filename string) error {
+	return os.Remove(filename)
+}
+
+// copy()
+func Copy(source, dest string) (bool, error) {
+	fd1, err := os.Open(source)
+	if err != nil {
+		return false, err
+	}
+	defer fd1.Close()
+	fd2, err := os.OpenFile(dest, os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		return false, err
+	}
+	defer fd2.Close()
+	_, e := io.Copy(fd2, fd1)
+	if e != nil {
+		return false, e
+	}
+	return true, nil
+}
+
 // is_readable
 func IsReadable(filename string) bool {
 	_, err := syscall.Open(filename, syscall.O_RDONLY, 0)
@@ -851,12 +877,12 @@ func Rename(oldname, newname string) error {
 }
 
 // touch()
-func Touch(filename string, ctime, atime int64) (bool, error) {
-	f, err := os.OpenFile(filename, os.O_RDONLY|os.O_CREATE, 0666)
+func Touch(filename string) (bool, error) {
+	fd, err := os.OpenFile(filename, os.O_RDONLY|os.O_CREATE, 0666)
 	if err != nil {
 		return false, err
 	}
-	f.Close()
+	fd.Close()
 	return true, nil
 }
 
@@ -881,44 +907,50 @@ func Basename(path string) string {
 	return filepath.Base(path)
 }
 
-//////////// Other Functions ////////////
-
-// echo
-func Echo(args ...interface{}) {
-	fmt.Print(args...)
+// chmod()
+func Chmod(filename string, mode os.FileMode) bool {
+	return os.Chmod(filename, mode) == nil
 }
 
-// Ternary expression
-// max := Ternary(a > b, a, b).(int)
-func Ternary(condition bool, trueVal, falseVal interface{}) interface{} {
-	if condition {
-		return trueVal
+// chown()
+func Chown(filename string, uid, gid int) bool {
+	return os.Chown(filename, uid, gid) == nil
+}
+
+// fclose()
+func Fclose(handle *os.File) error {
+	return handle.Close()
+}
+
+// filemtime()
+func Filemtime(filename string) (int64, error) {
+	fd, err := os.Open(filename)
+	if err != nil {
+		return 0, err
 	}
-	return falseVal
+	defer fd.Close()
+	fileinfo, err := fd.Stat()
+	if err != nil {
+		return 0, err
+	}
+	return fileinfo.ModTime().Unix(), nil
 }
 
-// uniqid()
-func Uniqid(prefix string) string {
-	t := time.Now()
-	sec := t.Unix()
-	usec := t.UnixNano() % 0x100000
-	return fmt.Sprintf("%s%08x%05x", prefix, sec, usec);
+// fgetcsv()
+func Fgetcsv(handle *os.File, length int, delimiter rune) ([][]string, error) {
+	reader := &csv.Reader{
+		Comma: delimiter,
+		r:     handle,
+	}
+	return reader.ReadAll()
 }
 
-// exec()
-func Exec(command string) error {
-	return exec.Command(command).Run()
+// fputcsv()
+func Fputcsv(handle *os.File, fields []string, delimiter rune) {
+	
 }
 
-// print_r()
-func PrintR(val interface{}) string {
-	return fmt.Sprint(val)
-}
-
-// intval()
-func Intval(val interface{}) (int, error) {
-	return strconv.Atoi(fmt.Sprintf("%v", val))
-}
+//////////// Variable handling Functions ////////////
 
 // is_numeric()
 func IsNumeric(val interface{}) bool {
@@ -937,5 +969,93 @@ func IsNumeric(val interface{}) bool {
 	default:
 		return false
 	}
-	return false
+}
+
+// is_bool()
+func IsBool(val interface{}) bool {
+	switch val.(type) {
+	case bool:
+		return true
+	case string:
+		_, err := strconv.ParseBool(val.(string))
+		return err == nil
+	case int, uint, int32, int64:
+
+	default:
+		return false
+	}
+}
+
+// intval()
+func Intval(val interface{}) (int, error) {
+	return strconv.Atoi(fmt.Sprintf("%v", val))
+}
+
+// floatval()
+func Floatval(val interface{}) (float64, error) {
+	return 0, nil
+}
+
+// boolval()
+func Boolval(val interface{}) (bool) {
+	switch val.(type) {
+	case bool:
+		return true
+	case string:
+		_, err := strconv.ParseBool(val.(string))
+		return err == nil
+	case int, uint, int32, int64:
+
+	default:
+		return false
+	}
+}
+
+// print_r()
+func PrintR(val interface{}) string {
+	return fmt.Sprint(val)
+}
+
+//////////// Other Functions ////////////
+
+// echo
+func Echo(args ...interface{}) {
+	fmt.Print(args...)
+}
+
+// uniqid()
+func Uniqid(prefix string) string {
+	t := time.Now()
+	sec := t.Unix()
+	usec := t.UnixNano() % 0x100000
+	return fmt.Sprintf("%s%08x%05x", prefix, sec, usec);
+}
+
+// exec()
+func Exec(command string) error {
+	return exec.Command(command).Run()
+}
+
+// exit()
+func Exit(status int) {
+	os.Exit(status)
+}
+
+// die()
+func Die(status int) {
+	os.Exit(status)
+}
+
+// pack()
+func Pack() {
+
+}
+
+// Ternary expression
+// max := Ternary(a > b, a, b).(int)
+func Ternary(condition bool, trueVal, falseVal interface{}) interface{} {
+	if condition {
+		return trueVal
+	}
+	return falseVal
 }
