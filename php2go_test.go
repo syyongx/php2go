@@ -13,7 +13,15 @@ func TestTime(t *testing.T) {
 }
 
 func TestString(t *testing.T) {
-
+	tAddslashes := Addslashes("f'oo b\"ar")
+	fmt.Println(tAddslashes)
+	tStripslashes := Stripslashes("f\\'oo b\\\"ar")
+	fmt.Println(tStripslashes)
+	tLevenshtein := Levenshtein("abc", "abcde", 1, 1, 1)
+	fmt.Println(tLevenshtein)
+	var percent float64
+	tSimilarText := SimilarText("xxabcde", "abcxx", &percent)
+	fmt.Println(tSimilarText, percent)
 }
 
 func TestArray(t *testing.T) {
@@ -23,6 +31,12 @@ func TestArray(t *testing.T) {
 	s1[2] = "c"
 	tArrayChunk := ArrayChunk(s1, 2)
 	fmt.Println(tArrayChunk)
+	var m1 = make(map[interface{}]interface{}, 3)
+	m1[1] = "a"
+	m1["a"] = "b"
+	m1[2.5] = 1
+	tArrayKeyExists := ArrayKeyExists("a", m1)
+	fmt.Println(tArrayKeyExists)
 }
 
 func TestUrl(t *testing.T) {

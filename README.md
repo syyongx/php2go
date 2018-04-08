@@ -56,6 +56,8 @@ md5_file()
 sha1()
 sha1_file()
 crc32()
+levenshtein()
+similar_text()
 ```
 ### URL Functions
 ```php
@@ -87,10 +89,13 @@ array_combine()
 array_reverse()
 implode()
 ```
-### Math Functions
+### Mathematical Functions
 ```php
+abs()
 rand()
 round()
+floor()
+ceil()
 pi()
 max()
 min()
@@ -105,8 +110,9 @@ Octdec()
 base_convert()
 is_nan()
 ```
-### Filesystem Functions
+### Directory/Filesystem Functions
 ```php
+stat()
 file_exists()
 is_file()
 is_dir()
@@ -129,6 +135,9 @@ chown()
 fclose()
 filemtime()
 fgetcsv()
+disk_free_space()
+glob()
+
 ```
 ### Variable handling Functions
 ```php
@@ -141,6 +150,11 @@ uniqid()
 exec()
 exit()
 die()
+getenv()
+putenv()
+memory_get_usage()
+version_compare()
+zip_open()
 Ternary(condition bool, trueVal, falseVal interface{}) interface{}
 ```
 

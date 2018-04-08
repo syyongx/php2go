@@ -26,6 +26,8 @@ import (
 	"unicode"
 	"io"
 	"encoding/csv"
+	"runtime"
+	"archive/zip"
 )
 
 //////////// Date/Time Functions ////////////
@@ -374,8 +376,15 @@ func Addslashes(str string) string {
 }
 
 // stripslashes()
-func Stripslashes(str string) {
-	// TODO
+func Stripslashes(str string) string {
+	var n []rune
+	for _, char := range str {
+		if char == '\\' {
+			continue
+		}
+		n = append(n, char)
+	}
+	return string(n)
 }
 
 // quotemeta()
@@ -440,6 +449,104 @@ func Sha1File(path string) (string, error) {
 // crc32()
 func Crc32(str string) uint32 {
 	return crc32.ChecksumIEEE([]byte(str))
+}
+
+// levenshtein()
+// costIns: Defines the cost of insertion.
+// costRep: Defines the cost of replacement.
+// costDel: Defines the cost of deletion.
+func Levenshtein(str1, str2 string, costIns, costRep, costDel int) int {
+	var maxLen = 255
+	l1 := len(str1)
+	l2 := len(str2)
+	if l1 == 0 {
+		return l2 * costIns
+	}
+	if l2 == 0 {
+		return l1 * costDel
+	}
+	if l1 > maxLen || l2 > maxLen {
+		return -1
+	}
+
+	tmp := make([]int, l2+1)
+	p1 := make([]int, l2+1)
+	p2 := make([]int, l2+1)
+	var c0, c1, c2 int
+	var i1, i2 int
+	for i2 := 0; i2 <= l2; i2++ {
+		p1[i2] = i2 * costIns
+	}
+	for i1 = 0; i1 < l1; i1++ {
+		p2[0] = p1[0] + costDel
+		for i2 = 0; i2 < l2; i2++ {
+			if str1[i1] == str2[i2] {
+				c0 = p1[i2]
+			} else {
+				c0 = p1[i2] + costRep
+			}
+			c1 = p1[i2+1] + costDel
+			if c1 < c0 {
+				c0 = c1
+			}
+			c2 = p2[i2] + costIns
+			if c2 < c0 {
+				c0 = c2
+			}
+			p2[i2+1] = c0
+		}
+		tmp = p1
+		p1 = p2
+		p2 = tmp
+	}
+	c0 = p1[l2]
+
+	return c0
+}
+
+// similar_text()
+func SimilarText(first, second string, percent *float64) int {
+	var similarText func(str1, str2 string, len1, len2 int) int
+	similarText = func(str1, str2 string, len1, len2 int) int {
+		var sum, max int
+		pos1, pos2 := 0, 0
+
+		// Find the longest segment of the same section in two strings
+		for i := 0; i < len1; i++ {
+			for j := 0; j < len2; j++ {
+				for l := 0; (i+l < len1) && (j+l < len2) && (str1[i+l] == str2[j+l]); l++ {
+					if l+1 > max {
+						max = l + 1
+						pos1 = i
+						pos2 = j
+					}
+				}
+			}
+		}
+
+		if sum = max; sum > 0 {
+			if pos1 > 0 && pos2 > 0 {
+				sum += similarText(str1, str2, pos1, pos2)
+			}
+			if (pos1+max < len1) && (pos2+max < len2) {
+				s1 := []byte(str1)
+				s2 := []byte(str2)
+				sum += similarText(string(s1[pos1+max:]), string(s2[pos2+max:]), len1-pos1-max, len2-pos2-max)
+			}
+		}
+
+		return sum
+	}
+
+	l1, l2 := len(first), len(second)
+	if l1+l2 == 0 {
+		return 0
+	}
+	sim := similarText(first, second, l1, l2)
+	if percent != nil {
+		*percent = float64(sim*200) / float64(l1+l2)
+	}
+	return sim
 }
 
 //////////// URL Functions ////////////
@@ -626,6 +733,12 @@ func ArrayDiff(maps ... map[interface{}]interface{}) {
 	// TODO
 }
 
+// array_key_exists
+func ArrayKeyExists(key interface{}, m map[interface{}]interface{}) bool {
+	_, ok := m[key]
+	return ok
+}
+
 // array_combine()
 func ArrayCombine(s1, s2 []interface{}) map[interface{}]interface{} {
 	if len(s1) != len(s2) {
@@ -659,7 +772,12 @@ func Implode(glue string, pieces []string) string {
 	return buf.String()
 }
 
-//////////// Math Functions ////////////
+//////////// Mathematical Functions ////////////
+
+// abs()
+func Abs(number float64) float64 {
+	return math.Abs(number)
+}
 
 // rand()
 func Rand(min, max int) int {
@@ -672,8 +790,18 @@ func Rand(min, max int) int {
 }
 
 // round()
-func Round(f float64) float64 {
-	return math.Floor(f + 0.5)
+func Round(value float64) float64 {
+	return math.Floor(value + 0.5)
+}
+
+// floor()
+func Floor(value float64) float64 {
+	return math.Floor(value)
+}
+
+// ceil()
+func Ceil(value float64) float64 {
+	return math.Ceil(value)
 }
 
 // pi()
@@ -771,7 +899,12 @@ func IsNan(val float64) bool {
 	return math.IsNaN(val)
 }
 
-//////////// Filesystem Functions ////////////
+//////////// Directory/Filesystem Functions ////////////
+
+// stat()
+func Stat(filename string) (os.FileInfo, error) {
+	return os.Stat(filename)
+}
 
 // file_exists()
 func FileExists(filename string) bool {
@@ -941,6 +1074,17 @@ func Fgetcsv(handle *os.File, length int, delimiter rune) ([][]string, error) {
 	return reader.ReadAll()
 }
 
+// disk_free_space()
+func DiskFreeSpace(directory string) float64 {
+	// TODO
+	return 0
+}
+
+// glob()
+func Glob(pattern string) ([]string, error) {
+	return filepath.Glob(pattern)
+}
+
 //////////// Variable handling Functions ////////////
 
 // is_numeric()
@@ -988,6 +1132,40 @@ func Exit(status int) {
 // die()
 func Die(status int) {
 	os.Exit(status)
+}
+
+// getenv()
+func Getenv(varname string) string {
+	return os.Getenv(varname)
+}
+
+// putenv()
+// The setting, like "FOO=BAR"
+func Putenv(setting string) error {
+	s := strings.Split(setting, "=")
+	if len(s) != 2 {
+		panic("setting: invalid")
+	}
+	return os.Setenv(s[0], s[1])
+}
+
+// memory_get_usage()
+// return in bytes
+func MemoryGetUsage(realUsage bool) uint64 {
+	stat := new(runtime.MemStats)
+	runtime.ReadMemStats(stat)
+	return stat.Alloc
+}
+
+// version_compare()
+// The possible operators are: <, lt, <=, le, >, gt, >=, ge, ==, =, eq, !=, <>, ne respectively.
+func VersionCompare(version1, version2, operator string) {
+	// TODO
+}
+
+// zip_open()
+func ZipOpen(filename string) (*zip.ReadCloser, error) {
+	return zip.OpenReader(filename)
 }
 
 // Ternary expression
