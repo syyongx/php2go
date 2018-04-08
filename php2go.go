@@ -506,7 +506,7 @@ func Levenshtein(str1, str2 string, costIns, costRep, costDel int) int {
 
 // similar_text()
 func SimilarText(first, second string, percent *float64) int {
-	var similarText func(str1, str2 string, len1, len2 int) int
+	var similarText func(string, string, int, int) int
 	similarText = func(str1, str2 string, len1, len2 int) int {
 		var sum, max int
 		pos1, pos2 := 0, 0
