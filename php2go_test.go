@@ -15,13 +15,15 @@ func TestTime(t *testing.T) {
 func TestString(t *testing.T) {
 	tAddslashes := Addslashes("f'oo b\"ar")
 	fmt.Println(tAddslashes)
-	tStripslashes := Stripslashes("f\\'oo b\\\"ar")
+	tStripslashes := Stripslashes("f\\'oo b\\\"ar\\\\a\\\\\\\\\\\\")
 	fmt.Println(tStripslashes)
-	tLevenshtein := Levenshtein("abc", "abcde", 1, 1, 1)
+	tLevenshtein := Levenshtein("a", "b", 1, 1, 1)
 	fmt.Println(tLevenshtein)
 	var percent float64
-	tSimilarText := SimilarText("xxabcde", "abcxx", &percent)
+	tSimilarText := SimilarText("a", "b", &percent)
 	fmt.Println(tSimilarText, percent)
+	tSoundex := Soundex("Lissajous")
+	fmt.Println(tSoundex)
 }
 
 func TestArray(t *testing.T) {

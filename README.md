@@ -58,6 +58,7 @@ sha1_file()
 crc32()
 levenshtein()
 similar_text()
+soundex()
 ```
 ### URL Functions
 ```php
