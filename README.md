@@ -1,5 +1,5 @@
 # php2go
-Use Golang to implement PHP's common built-in functions. About 100+ functions have been implemented.
+Use Golang to implement PHP's common built-in functions. About 120+ functions have been implemented.
 
 ## Install
 ```shell
@@ -114,6 +114,7 @@ is_nan()
 ### Directory/Filesystem Functions
 ```php
 stat()
+pathinfo()
 file_exists()
 is_file()
 is_dir()
@@ -138,7 +139,7 @@ filemtime()
 fgetcsv()
 disk_free_space()
 glob()
-
+umask()
 ```
 ### Variable handling Functions
 ```php

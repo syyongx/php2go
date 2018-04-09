@@ -141,8 +141,46 @@ func Strrev(str string) string {
 }
 
 // number_format()
-func NumberFormat() {
-	// TODO
+func NumberFormat(number float64, decimals uint, decPoint, thousandsSep string) string {
+	neg := false
+	if number < 0 {
+		number = -number
+		neg = true
+	}
+	dec := int(decimals)
+	// Will round off
+	str := fmt.Sprintf("%."+strconv.Itoa(int(decimals))+"F", number)
+	prefix, suffix := "", ""
+	if dec > 0 {
+		prefix = str[0:len(str)-(dec+1)]
+		suffix = str[len(str)-dec:]
+	} else {
+		prefix = str
+	}
+	n := 0
+	var s []byte
+	for i := len(prefix); i > 0; i-- {
+		if n > 0 && n%3 == 0 {
+			s = append(s, []byte(thousandsSep)...)
+		}
+		s = append(s, prefix[i-1])
+		n++
+	}
+	// strrev
+	sr := make([]byte, len(s))
+	for j, v := range s {
+		sr[len(sr)-(j+1)] = v
+	}
+
+	tmp := string(sr)
+	if dec > 0 {
+		tmp += decPoint + suffix
+	}
+	if neg {
+		tmp = "-" + tmp
+	}
+
+	return tmp
 }
 
 // chunk_split()
@@ -575,8 +613,12 @@ func Soundex(str string) string {
 	sd := make([]rune, 4)
 	// build soundex string
 	for i := 0; i < len(str) && small < 4; i++ {
-		c, _ := utf8.DecodeRuneInString(strings.ToUpper(string(str[i])))
-		code = int(c)
+		// ToUpper
+		if str[i] < '\u007F' && 'a' <= str[i] && str[i] <= 'z' {
+			code = int(str[i] - 'a' + 'A')
+		} else {
+			code = int(str[i])
+		}
 		if code >= 'A' && code <= 'Z' {
 			if small == 0 {
 				sd[small] = rune(code)
@@ -959,6 +1001,11 @@ func Stat(filename string) (os.FileInfo, error) {
 	return os.Stat(filename)
 }
 
+// pathinfo()
+func Pathinfo(path string) {
+	// TODO
+}
+
 // file_exists()
 func FileExists(filename string) bool {
 	_, err := os.Stat(filename)
@@ -1138,22 +1185,61 @@ func Glob(pattern string) ([]string, error) {
 	return filepath.Glob(pattern)
 }
 
+// umask()
+func Umask(mask int) int {
+	return syscall.Umask(mask)
+}
+
 //////////// Variable handling Functions ////////////
 
 // is_numeric()
 func IsNumeric(val interface{}) bool {
 	switch val.(type) {
-	case int, int8, int16, int32, int64:
-	case uint, uint8, uint16, uint32, uint64:
-	case float32, float64:
-	case complex64, complex128:
+	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+	case float32, float64, complex64, complex128:
 		return true
 	case string:
-		// TODO check string is numeric
-		return false
-	default:
-		return false
+		str := val.(string)
+		if str == "" {
+			return false
+		}
+		// Trim any whitespace
+		str = strings.Trim(str, " \\t\\n\\r\\v\\f")
+		if str[0] == '-' || str[0] == '+' {
+			if len(str) == 1 {
+				return false
+			}
+			str = str[1:]
+		}
+		// hex
+		if len(str) > 2 && str[0] == '0' && (str[1] == 'x' || str[1] == 'X') {
+			for _, h := range str[2:] {
+				if !((h >= '0' && h <= '9') || (h >= 'a' && h <= 'f') || (h >= 'A' && h <= 'F')) {
+					return false
+				}
+			}
+			return true
+		}
+		// 0-9,Point,Scientific
+		p, s, l := 0, 0, len(str)
+		for i, v := range str {
+			if v == '.' { // Point
+				if p > 0 || s > 0 || i+1 == l {
+					return false
+				}
+				p = i
+			} else if v == 'e' || v == 'E' { // Scientific
+				if i == 0 || s > 0 || i+1 == l {
+					return false
+				}
+				s = i
+			} else if v < '0' || v > '9' {
+				return false
+			}
+		}
+		return true
 	}
+
 	return false
 }
 

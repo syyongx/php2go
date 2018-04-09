@@ -22,7 +22,7 @@ func TestString(t *testing.T) {
 	var percent float64
 	tSimilarText := SimilarText("a", "b", &percent)
 	fmt.Println(tSimilarText, percent)
-	tSoundex := Soundex("Lissajous")
+	tSoundex := Soundex("Heilbronn")
 	fmt.Println(tSoundex)
 }
 
@@ -43,6 +43,13 @@ func TestArray(t *testing.T) {
 
 func TestUrl(t *testing.T) {
 
+}
+
+func TestMath(t *testing.T) {
+	tNumberFormat := NumberFormat(234567890122.777, 2, ".", ",")
+	fmt.Println(tNumberFormat)
+	tIsNumeric := IsNumeric("-0xaF")
+	fmt.Println(tIsNumeric)
 }
 
 func TestOther(t *testing.T) {
