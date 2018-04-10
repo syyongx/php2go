@@ -131,16 +131,21 @@ func Substr(str string, start uint, length int) string {
 // strrev()
 func Strrev(str string) string {
 	runes := []rune(str)
-	l := utf8.RuneCountInString(str)
-	ns := make([]rune, l)
-	for i, _ := range runes {
-		l--
-		ns[i] = runes[l]
+	length := len(runes)
+	half := length / 2
+	for i := 0; i < half; i++ {
+		tmp := runes[i]
+		e := length - i - 1
+		runes[i] = runes[e]
+		runes[e] = tmp
 	}
-	return string(ns)
+	return string(runes)
 }
 
 // number_format()
+// decimals: Sets the number of decimal points.
+// decPoint: Sets the separator for the decimal point.
+// thousandsSep: Sets the thousands separator.
 func NumberFormat(number float64, decimals uint, decPoint, thousandsSep string) string {
 	neg := false
 	if number < 0 {
@@ -149,7 +154,7 @@ func NumberFormat(number float64, decimals uint, decPoint, thousandsSep string) 
 	}
 	dec := int(decimals)
 	// Will round off
-	str := fmt.Sprintf("%."+strconv.Itoa(int(decimals))+"F", number)
+	str := fmt.Sprintf("%."+strconv.Itoa(dec)+"F", number)
 	prefix, suffix := "", ""
 	if dec > 0 {
 		prefix = str[0:len(str)-(dec+1)]

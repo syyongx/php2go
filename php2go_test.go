@@ -121,7 +121,7 @@ func TestAll(t *testing.T) {
 	tarraycombine := ArrayCombine(s1, s2)
 	fmt.Println(tarraycombine)
 	tstrrev := Strrev("abc \t nic %我是10.5()---")
-	fmt.Println(tstrrev)
+	fmt.Println("Strrev", tstrrev)
 	tchunksplit := ChunkSplit("abc \t nic %我是10.5()---", 3, "e")
 	fmt.Println(tchunksplit)
 	tquotemeta := Quotemeta(".+?[$](*)^我是")
