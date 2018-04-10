@@ -162,30 +162,32 @@ func NumberFormat(number float64, decimals uint, decPoint, thousandsSep string) 
 	} else {
 		prefix = str
 	}
-	n := 0
-	var s []byte
-	for i := len(prefix); i > 0; i-- {
-		if n > 0 && n%3 == 0 {
-			s = append(s, []byte(thousandsSep)...)
+	sep := []byte(thousandsSep)
+	n, l1, l2 := 0, len(prefix), len(sep)
+	// thousands sep num
+	c := (l1-1) / 3
+	tmp := make([]byte, l2*c+l1)
+	pos := len(tmp) - 1
+	for i := l1; i > 0; i-- {
+		if l2 > 0 && n > 0 && n%3 == 0 {
+			for j, _ := range sep {
+				tmp[pos] = sep[l2-j-1]
+				pos--
+			}
 		}
-		s = append(s, prefix[i-1])
+		tmp[pos] = prefix[i-1]
 		n++
+		pos--
 	}
-	// strrev
-	sr := make([]byte, len(s))
-	for j, v := range s {
-		sr[len(sr)-(j+1)] = v
-	}
-
-	tmp := string(sr)
+	s := string(tmp)
 	if dec > 0 {
-		tmp += decPoint + suffix
+		s += decPoint + suffix
 	}
 	if neg {
-		tmp = "-" + tmp
+		s = "-" + s
 	}
 
-	return tmp
+	return s
 }
 
 // chunk_split()

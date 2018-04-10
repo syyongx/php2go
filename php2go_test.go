@@ -46,7 +46,7 @@ func TestUrl(t *testing.T) {
 }
 
 func TestMath(t *testing.T) {
-	tNumberFormat := NumberFormat(234567890122.777, 2, ".", ",")
+	tNumberFormat := NumberFormat(1234567890.777, 2, ".", ",")
 	fmt.Println(tNumberFormat)
 	tIsNumeric := IsNumeric("-0xaF")
 	fmt.Println(tIsNumeric)
