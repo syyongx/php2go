@@ -131,13 +131,8 @@ func Substr(str string, start uint, length int) string {
 // strrev()
 func Strrev(str string) string {
 	runes := []rune(str)
-	length := len(runes)
-	half := length / 2
-	for i := 0; i < half; i++ {
-		tmp := runes[i]
-		e := length - i - 1
-		runes[i] = runes[e]
-		runes[e] = tmp
+	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+		runes[i], runes[j] = runes[j], runes[i]
 	}
 	return string(runes)
 }
@@ -165,7 +160,7 @@ func NumberFormat(number float64, decimals uint, decPoint, thousandsSep string) 
 	sep := []byte(thousandsSep)
 	n, l1, l2 := 0, len(prefix), len(sep)
 	// thousands sep num
-	c := (l1-1) / 3
+	c := (l1 - 1) / 3
 	tmp := make([]byte, l2*c+l1)
 	pos := len(tmp) - 1
 	for i := l1; i > 0; i-- {
