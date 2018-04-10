@@ -163,16 +163,14 @@ func NumberFormat(number float64, decimals uint, decPoint, thousandsSep string) 
 	c := (l1 - 1) / 3
 	tmp := make([]byte, l2*c+l1)
 	pos := len(tmp) - 1
-	for i := l1; i > 0; i-- {
+	for i := l1 - 1; i >= 0; i, n, pos = i-1, n+1, pos-1 {
 		if l2 > 0 && n > 0 && n%3 == 0 {
 			for j, _ := range sep {
 				tmp[pos] = sep[l2-j-1]
 				pos--
 			}
 		}
-		tmp[pos] = prefix[i-1]
-		n++
-		pos--
+		tmp[pos] = prefix[i]
 	}
 	s := string(tmp)
 	if dec > 0 {
