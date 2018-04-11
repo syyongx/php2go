@@ -1297,10 +1297,17 @@ func MemoryGetUsage(realUsage bool) uint64 {
 
 // version_compare()
 // The possible operators are: <, lt, <=, le, >, gt, >=, ge, ==, =, eq, !=, <>, ne respectively.
+// special version strings these are handled in the following order,
+// (any string not found) < dev < alpha = a < beta = b < RC = rc < # < pl = p
+// Usage:
+// VersionCompare("1.2.3-alpha", "1.2.3RC7", '>=')
+// VersionCompare("1.2.3-beta", "1.2.3pl", 'lt')
+// VersionCompare("1.1_dev", "1.2any", 'eq')
 func VersionCompare(version1, version2, operator string) bool {
 	var vcompare func(string, string) int
 	var canonicalize func(string) string
 	var special func(string, string) int
+
 	// version compare
 	vcompare = func(origV1, origV2 string) int {
 		if origV1 == "" || origV2 == "" {
@@ -1314,6 +1321,7 @@ func VersionCompare(version1, version2, operator string) bool {
 				}
 			}
 		}
+
 		ver1, ver2, compare := "", "", 0
 		if origV1[0] == '#' {
 			ver1 = origV1
@@ -1340,6 +1348,7 @@ func VersionCompare(version1, version2, operator string) bool {
 			} else {
 				p2, ver2 = ver2[0:n2], ver2[n2+1:]
 			}
+
 			if (p1[0] >= '0' && p1[0] <= '9') && (p2[0] >= '0' && p2[0] <= '9') { // all isdigit
 				l1, _ := strconv.Atoi(p1)
 				l2, _ := strconv.Atoi(p2)
@@ -1359,10 +1368,12 @@ func VersionCompare(version1, version2, operator string) bool {
 					compare = special(p1, "#N#")
 				}
 			}
+
 			if compare != 0 || n1 == -1 || n2 == -1 {
 				break
 			}
 		}
+
 		if compare == 0 {
 			if ver1 != "" {
 				if ver1[0] >= '0' && ver1[0] <= '9' {
@@ -1396,7 +1407,7 @@ func VersionCompare(version1, version2, operator string) bool {
 			if i+1 < l { // Have the next one
 				next = ver[i+1]
 			}
-			if v == '-' || v == '_' || v == '+' { // repalce "-","_","+" to "."
+			if v == '-' || v == '_' || v == '+' { // repalce '-', '_', '+' to '.'
 				if j > 0 && buf[j-1] != '.' {
 					buf[j] = '.'
 					j++
@@ -1442,6 +1453,7 @@ func VersionCompare(version1, version2, operator string) bool {
 			"pl":    5,
 			"p":     5,
 		}
+
 		for name, order := range forms {
 			if len1 < len(name) {
 				continue
@@ -1460,6 +1472,7 @@ func VersionCompare(version1, version2, operator string) bool {
 				break
 			}
 		}
+
 		if found1 == found2 {
 			return 0
 		} else if found1 > found2 {
@@ -1468,7 +1481,9 @@ func VersionCompare(version1, version2, operator string) bool {
 			return -1
 		}
 	}
+
 	compare := vcompare(version1, version2)
+
 	switch operator {
 	case "<", "lt":
 		return compare == -1
