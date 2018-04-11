@@ -53,7 +53,8 @@ func TestMath(t *testing.T) {
 }
 
 func TestOther(t *testing.T) {
-
+	tVersionCompare := VersionCompare("1.3-beta", "1.4Rc1", "<")
+	fmt.Println(tVersionCompare)
 }
 
 func TestAll(t *testing.T) {
