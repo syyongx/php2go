@@ -72,6 +72,10 @@ func TestOther(t *testing.T) {
 func TestFile(t *testing.T) {
 	tPathinfo := Pathinfo("/home/go/.", 0)
 	fmt.Println(tPathinfo)
+	tDiskFreeSpace, _ := DiskFreeSpace("/")
+	fmt.Println(tDiskFreeSpace)
+	tDiskTotalSpace, _ := DiskTotalSpace("/")
+	fmt.Println(tDiskTotalSpace)
 }
 
 func TestAll(t *testing.T) {

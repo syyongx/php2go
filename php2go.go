@@ -842,12 +842,7 @@ func ArrayShift(s *[]interface{}) interface{} {
 	return f
 }
 
-// array_diff()
-func ArrayDiff(maps ... map[interface{}]interface{}) {
-	// TODO
-}
-
-// array_key_exists
+// array_key_exists()
 func ArrayKeyExists(key interface{}, m map[interface{}]interface{}) bool {
 	_, ok := m[key]
 	return ok
@@ -1230,9 +1225,23 @@ func Fgetcsv(handle *os.File, length int, delimiter rune) ([][]string, error) {
 }
 
 // disk_free_space()
-func DiskFreeSpace(directory string) float64 {
-	// TODO
-	return 0
+func DiskFreeSpace(directory string) (uint64, error) {
+	fs := syscall.Statfs_t{}
+	err := syscall.Statfs(directory, &fs)
+	if err != nil {
+		return 0, err
+	}
+	return fs.Bfree * uint64(fs.Bsize), nil
+}
+
+// disk_total_space()
+func DiskTotalSpace(directory string) (uint64, error) {
+	fs := syscall.Statfs_t{}
+	err := syscall.Statfs(directory, &fs)
+	if err != nil {
+		return 0, err
+	}
+	return fs.Blocks * uint64(fs.Bsize), nil
 }
 
 // glob()
