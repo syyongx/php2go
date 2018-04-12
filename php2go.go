@@ -152,7 +152,7 @@ func NumberFormat(number float64, decimals uint, decPoint, thousandsSep string) 
 	str := fmt.Sprintf("%."+strconv.Itoa(dec)+"F", number)
 	prefix, suffix := "", ""
 	if dec > 0 {
-		prefix = str[0:len(str)-(dec+1)]
+		prefix = str[:len(str)-(dec+1)]
 		suffix = str[len(str)-dec:]
 	} else {
 		prefix = str
@@ -708,18 +708,20 @@ func ArrayFlip(m map[interface{}]interface{}) map[interface{}]interface{} {
 
 // array_keys()
 func ArrayKeys(elements map[interface{}]interface{}) []interface{} {
-	var keys []interface{}
+	i, keys := 0, make([]interface{}, len(elements))
 	for key, _ := range elements {
-		keys = append(keys, key)
+		keys[i] = key
+		i++
 	}
 	return keys
 }
 
 // array_values()
 func ArrayValues(elements map[interface{}]interface{}) []interface{} {
-	var vals []interface{}
+	i, vals := 0, make([]interface{}, len(elements))
 	for _, val := range elements {
-		vals = append(vals, val)
+		vals[i] = val
+		i++
 	}
 	return vals
 }
@@ -820,7 +822,7 @@ func ArrayPop(s *[]interface{}) interface{} {
 	}
 	ep := len(*s) - 1
 	e := (*s)[ep]
-	*s = (*s)[0:ep]
+	*s = (*s)[:ep]
 	return e
 }
 
@@ -1403,15 +1405,15 @@ func VersionCompare(version1, version2, operator string) bool {
 			p1, p2 := "", ""
 			n1 = strings.IndexByte(ver1, '.')
 			if n1 == -1 {
-				p1, ver1 = ver1[0:], ""
+				p1, ver1 = ver1[:], ""
 			} else {
-				p1, ver1 = ver1[0:n1], ver1[n1+1:]
+				p1, ver1 = ver1[:n1], ver1[n1+1:]
 			}
 			n2 = strings.IndexByte(ver2, '.')
 			if n2 == -1 {
-				p2, ver2 = ver2[0:], ""
+				p2, ver2 = ver2, ""
 			} else {
-				p2, ver2 = ver2[0:n2], ver2[n2+1:]
+				p2, ver2 = ver2[:n2], ver2[n2+1:]
 			}
 
 			if (p1[0] >= '0' && p1[0] <= '9') && (p2[0] >= '0' && p2[0] <= '9') { // all isdigit
@@ -1499,7 +1501,7 @@ func VersionCompare(version1, version2, operator string) bool {
 			}
 		}
 
-		return string(buf[0:j])
+		return string(buf[:j])
 	}
 
 	// compare special version forms
@@ -1523,7 +1525,7 @@ func VersionCompare(version1, version2, operator string) bool {
 			if len1 < len(name) {
 				continue
 			}
-			if strings.Compare(form1[0:len(name)], name) == 0 {
+			if strings.Compare(form1[:len(name)], name) == 0 {
 				found1 = order
 				break
 			}
@@ -1532,7 +1534,7 @@ func VersionCompare(version1, version2, operator string) bool {
 			if len2 < len(name) {
 				continue
 			}
-			if strings.Compare(form2[0:len(name)], name) == 0 {
+			if strings.Compare(form2[:len(name)], name) == 0 {
 				found2 = order
 				break
 			}
