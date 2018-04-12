@@ -600,14 +600,14 @@ func Soundex(str string) string {
 		panic("str: cannot be an empty string")
 	}
 	table := [26]rune{
-		0, '1', '2', '3',           // A, B, C, D
-		0, '1', '2',                // E, F, G
-		0,                          // H
-		0, '2', '2', '4', '5', '5', // I, J, K, L, M, N
-		0, '1', '2', '6', '2', '3', // O, P, Q, R, S, T
-		0, '1',                     // U, V
-		0, '2',                     // W, X
-		0, '2',                     // Y, Z
+		'0', '1', '2', '3',           // A, B, C, D
+		'0', '1', '2',                // E, F, G
+		'0',                          // H
+		'0', '2', '2', '4', '5', '5', // I, J, K, L, M, N
+		'0', '1', '2', '6', '2', '3', // O, P, Q, R, S, T
+		'0', '1',                     // U, V
+		'0', '2',                     // W, X
+		'0', '2',                     // Y, Z
 	}
 	last, code, small := -1, 0, 0
 	sd := make([]rune, 4)
@@ -805,21 +805,41 @@ func ArrayColumn(input map[string]map[string]interface{}, columnKey string) []in
 	return res
 }
 
-// array_pop()
-// for slice, map is unordered
-func ArrayPop(elements []interface{}) interface{} {
-	return elements[0:len(elements)-1]
+// array_push()
+// Push one or more elements onto the end of slice
+func ArrayPush(s *[]interface{}, elements ...interface{}) int {
+	*s = append(*s, elements...)
+	return len(elements)
 }
 
-// array_shift()
-// for slice, map is unordered
-func ArrayShift(elements []interface{}) []interface{} {
-	return elements[1:]
+// array_pop()
+// Pop the element off the end of slice
+func ArrayPop(s *[]interface{}) interface{} {
+	if len(*s) == 0 {
+		return nil
+	}
+	ep := len(*s) - 1
+	e := (*s)[ep]
+	*s = (*s)[0:ep]
+	return e
 }
 
 // array_unshift()
-func ArrayUnshift() {
-	// TODO
+// Prepend one or more elements to the beginning of a slice
+func ArrayUnshift(s *[]interface{}, elements ...interface{}) int {
+	*s = append(elements, *s...)
+	return len(elements)
+}
+
+// array_shift()
+// Shift an element off the beginning of slice
+func ArrayShift(s *[]interface{}) interface{} {
+	if len(*s) == 0 {
+		return nil
+	}
+	f := (*s)[0]
+	*s = (*s)[1:]
+	return f
 }
 
 // array_diff()
@@ -1001,8 +1021,44 @@ func Stat(filename string) (os.FileInfo, error) {
 }
 
 // pathinfo()
-func Pathinfo(path string) {
-	// TODO
+// 1: dirname; 2: basename; 4: extension; 8: filename
+// Usage:
+// Pathinfo("/home/go/path/src/php2go/php2go.go", 1|2|4|8)
+func Pathinfo(path string, options uint) map[string]string {
+	if options == 0 {
+		options = 1 | 2 | 4 | 8
+	}
+	info := make(map[string]string)
+	if (options & 1) == 1 {
+		info["dirname"] = filepath.Dir(path)
+	}
+	if (options & 2) == 2 {
+		info["basename"] = filepath.Base(path)
+	}
+	if ((options & 4) == 4) || ((options & 8) == 8) {
+		basename := ""
+		if (options & 2) == 2 {
+			basename, _ = info["basename"]
+		} else {
+			basename = filepath.Base(path)
+		}
+		p := strings.LastIndex(basename, ".")
+		filename, extension := "", ""
+		if p > 0 {
+			filename, extension = basename[:p], basename[p+1:]
+		} else if p == -1 {
+			filename = basename
+		} else if p == 0 {
+			extension = basename[p+1:]
+		}
+		if (options & 4) == 4 {
+			info["extension"] = extension
+		}
+		if (options & 8) == 8 {
+			info["filename"] = filename
+		}
+	}
+	return info
 }
 
 // file_exists()
@@ -1437,7 +1493,7 @@ func VersionCompare(version1, version2, operator string) bool {
 		return string(buf[0:j])
 	}
 
-	//compare special version forms
+	// compare special version forms
 	special = func(form1, form2 string) int {
 		found1, found2, len1, len2 := -1, -1, len(form1), len(form2)
 		// (Any string not found) < dev < alpha = a < beta = b < RC = rc < # < pl = p

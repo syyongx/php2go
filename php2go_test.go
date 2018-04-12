@@ -39,6 +39,18 @@ func TestArray(t *testing.T) {
 	m1[2.5] = 1
 	tArrayKeyExists := ArrayKeyExists("a", m1)
 	fmt.Println(tArrayKeyExists)
+	tArrayUnshift := ArrayUnshift(&s1, "x", "y")
+	fmt.Println(tArrayUnshift)
+	fmt.Println(s1)
+	tArrayPush := ArrayPush(&s1, "u", "v")
+	fmt.Println(tArrayPush)
+	fmt.Println(s1)
+	tArrayPop := ArrayPop(&s1)
+	fmt.Println(tArrayPop)
+	fmt.Println(s1)
+	tArrayShift := ArrayShift(&s1)
+	fmt.Println(tArrayShift)
+	fmt.Println(s1)
 }
 
 func TestUrl(t *testing.T) {
@@ -55,6 +67,11 @@ func TestMath(t *testing.T) {
 func TestOther(t *testing.T) {
 	tVersionCompare := VersionCompare("1.3-beta", "1.4Rc1", "<")
 	fmt.Println(tVersionCompare)
+}
+
+func TestFile(t *testing.T) {
+	tPathinfo := Pathinfo("/home/go/.", 0)
+	fmt.Println(tPathinfo)
 }
 
 func TestAll(t *testing.T) {
@@ -80,10 +97,10 @@ func TestAll(t *testing.T) {
 	fmt.Println(tstrpos)
 	timplode := Implode(",", []string{"a", "b", "c"})
 	fmt.Println(timplode)
-	trealpath1, err1 := Realpath("/Users/Dojack/Documents/phpdev/../godev/gospring/../")
+	trealpath1, err1 := Realpath("/home/go/../go/test/../")
 	trealpath2, err2 := Realpath("~/Documents/godev")
 	fmt.Println(trealpath1, trealpath2, err1, err2)
-	tbasename := Basename("/Users/Dojack/Documents/godev/path/src/practice/php2go/php2go.go")
+	tbasename := Basename("/home/go/src/pkg/php2go.go")
 	fmt.Println(tbasename)
 	tarrayfill := ArrayFill(-3, 6, "aaa")
 	fmt.Println(tarrayfill)
