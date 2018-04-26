@@ -72,7 +72,7 @@ func TestOther(t *testing.T) {
 }
 
 func TestFile(t *testing.T) {
-	tPathinfo := Pathinfo("/home/go/.", 0)
+	tPathinfo := Pathinfo("/home/go/php2go.go.go", 0)
 	fmt.Println(tPathinfo)
 	tDiskFreeSpace, _ := DiskFreeSpace("/")
 	fmt.Println(tDiskFreeSpace)

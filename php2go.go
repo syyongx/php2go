@@ -293,7 +293,7 @@ func Strstr(haystack string, needle string) string {
 	if idx == -1 {
 		return ""
 	}
-	return haystack[idx+len([]byte(needle))-1: ]
+	return haystack[idx+len([]byte(needle))-1:]
 }
 
 // str_shuffle()
@@ -614,10 +614,11 @@ func Soundex(str string) string {
 	// build soundex string
 	for i := 0; i < len(str) && small < 4; i++ {
 		// ToUpper
-		if str[i] < '\u007F' && 'a' <= str[i] && str[i] <= 'z' {
-			code = int(str[i] - 'a' + 'A')
+		char := str[i]
+		if char < '\u007F' && 'a' <= char && char <= 'z' {
+			code = int(char - 'a' + 'A')
 		} else {
-			code = int(str[i])
+			code = int(char)
 		}
 		if code >= 'A' && code <= 'Z' {
 			if small == 0 {
@@ -811,7 +812,7 @@ func ArrayColumn(input map[string]map[string]interface{}, columnKey string) []in
 // Push one or more elements onto the end of slice
 func ArrayPush(s *[]interface{}, elements ...interface{}) int {
 	*s = append(*s, elements...)
-	return len(elements)
+	return len(*s)
 }
 
 // array_pop()
@@ -830,7 +831,7 @@ func ArrayPop(s *[]interface{}) interface{} {
 // Prepend one or more elements to the beginning of a slice
 func ArrayUnshift(s *[]interface{}, elements ...interface{}) int {
 	*s = append(elements, *s...)
-	return len(elements)
+	return len(*s)
 }
 
 // array_shift()
