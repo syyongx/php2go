@@ -234,7 +234,7 @@ func TestFile(t *testing.T) {
 	tbasename := Basename("/home/go/src/pkg/php2go.go")
 	equal(t, "php2go.go", tbasename)
 
-	tPathinfo := Pathinfo("/home/go/php2go.go.go", 0)
+	tPathinfo := Pathinfo("/home/go/php2go.go.go", -1)
 	equal(t, map[string]string{"dirname": "/home/go", "basename": "php2go.go.go", "extension": "go", "filename": "php2go.go"}, tPathinfo)
 
 	tDiskFreeSpace, _ := DiskFreeSpace("/")
