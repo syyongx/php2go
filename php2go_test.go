@@ -44,6 +44,18 @@ func TestString(t *testing.T) {
 	tucfirst := Ucfirst("kello world")
 	equal(t, "Kello world", tucfirst)
 
+	tlcfirst := Lcfirst("Kello world")
+	equal(t, "kello world", tlcfirst)
+
+	tUcwords := Ucwords("kello world")
+	equal(t, "Kello World", tUcwords)
+
+	tStrlen := Strlen("G简体")
+	equal(t, 7, tStrlen)
+
+	tMbStrlen := MbStrlen("G简体")
+	equal(t, 3, tMbStrlen)
+
 	tstrpos := Strpos("hello world", "w", 0)
 	equal(t, 6, tstrpos)
 
