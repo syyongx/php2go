@@ -92,17 +92,32 @@ func StrReplace(search, replace, subject string, count int) string {
 	return strings.Replace(subject, search, replace, count)
 }
 
+// strtoupper()
+func Strtoupper(str string) string {
+	return strings.ToUpper(str)
+}
+
+// strtolower()
+func Strtolower(str string) string {
+	return strings.ToLower(str)
+}
+
 // ucfirst()
 func Ucfirst(str string) string {
-	if str == "" {
-		return ""
+	for _, v := range str {
+		u := string(unicode.ToUpper(v))
+		return u + str[len(u):]
 	}
-	runes := []rune(str)
-	f := strings.ToUpper(string(runes[0]))
-	if len(runes) > 1 {
-		return f + string(runes[1:])
+	return ""
+}
+
+// lcfirst()
+func Lcfirst(str string) string {
+	for _, v := range str {
+		u := string(unicode.ToLower(v))
+		return u + str[len(u):]
 	}
-	return f
+	return ""
 }
 
 // ucwords()
@@ -334,16 +349,6 @@ func Rtrim(str, characterMask string) string {
 // explode()
 func Explode(delimiter, str string) []string {
 	return strings.Split(str, delimiter)
-}
-
-// strtoupper()
-func Strtoupper(str string) string {
-	return strings.ToUpper(str)
-}
-
-// strtolower()
-func Strtolower(str string) string {
-	return strings.ToLower(str)
 }
 
 // chr()
