@@ -1,6 +1,8 @@
 # php2go
 Use Golang to implement PHP's common built-in functions. About 120+ functions have been implemented.
 
+Hope this project will help PHPer to learn Golang.
+
 ## Install
 ```shell
 go get github.com/syyongx/php2go
