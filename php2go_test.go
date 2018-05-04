@@ -9,6 +9,9 @@ import (
 )
 
 func TestTime(t *testing.T) {
+	ttimestamp := Time()
+	gt(t, float64(ttimestamp), 1522684800)
+
 	tdate := Date("02/01/2006 15:04:05 PM", 1524799394)
 	equal(t, "27/04/2018 11:23:14 AM", tdate)
 
@@ -19,9 +22,6 @@ func TestTime(t *testing.T) {
 func TestString(t *testing.T) {
 	taddslashes := Addslashes("'wo'简体\"chousha")
 	equal(t, `\'wo\'简体\"chousha`, taddslashes)
-
-	ttimestamp := Time()
-	gt(t, float64(ttimestamp), 0)
 
 	tmd5 := Md5("123456")
 	equal(t, "e10adc3949ba59abbe56e057f20f883e", tmd5)
