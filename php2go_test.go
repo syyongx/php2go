@@ -268,6 +268,12 @@ func TestOther(t *testing.T) {
 	gt(t, float64(tMemoryGetUsage), 0)
 }
 
+func BenchmarkFn(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		ChunkSplit("abcd", 2, "\r\n")
+	}
+}
+
 // Expected to be equal.
 func equal(t *testing.T, expected, actual interface{}) {
 	if !reflect.DeepEqual(expected, actual) {

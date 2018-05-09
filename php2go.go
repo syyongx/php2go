@@ -208,7 +208,7 @@ func ChunkSplit(body string, chunklen uint, end string) string {
 	if l <= 1 || l < chunklen {
 		return body + end
 	}
-	var ns []rune
+	ns := make([]rune, 0, len(runes) + len(erunes))
 	var i uint
 	for i = 0; i < l; i += chunklen {
 		if i+chunklen > l {
@@ -407,20 +407,20 @@ func JsonDecode(val interface{}) ([]byte, error) {
 
 // addslashes()
 func Addslashes(str string) string {
-	var n []rune
+	var buf bytes.Buffer
 	for _, char := range str {
 		switch char {
 		case '\'', '"', '\\':
-			n = append(n, '\\')
+			buf.WriteRune('\\')
 		}
-		n = append(n, char)
+		buf.WriteRune(char)
 	}
-	return string(n)
+	return buf.String()
 }
 
 // stripslashes()
 func Stripslashes(str string) string {
-	var n []rune
+	var buf bytes.Buffer
 	l, skip := len(str), false
 	for i, char := range str {
 		if skip {
@@ -431,22 +431,22 @@ func Stripslashes(str string) string {
 			}
 			continue
 		}
-		n = append(n, char)
+		buf.WriteRune(char)
 	}
-	return string(n)
+	return buf.String()
 }
 
 // quotemeta()
 func Quotemeta(str string) string {
-	var n []rune
+	var buf bytes.Buffer
 	for _, char := range str {
 		switch char {
 		case '.', '+', '\\', '(', '$', ')', '[', '^', ']', '*', '?':
-			n = append(n, '\\')
+			buf.WriteRune('\\')
 		}
-		n = append(n, char)
+		buf.WriteRune(char)
 	}
-	return string(n)
+	return buf.String()
 }
 
 // htmlentities()
@@ -768,7 +768,11 @@ func ArrayValues(elements map[interface{}]interface{}) []interface{} {
 
 // array_merge()
 func ArrayMerge(ss ...[]interface{}) []interface{} {
-	var s []interface{}
+	n := 0
+	for _, v := range ss {
+		n += len(v)
+	}
+	s := make([]interface{}, 0, n)
 	for _, v := range ss {
 		s = append(s, v...)
 	}
@@ -839,13 +843,13 @@ func ArrayRand(elements []interface{}) []interface{} {
 
 // array_column()
 func ArrayColumn(input map[string]map[string]interface{}, columnKey string) []interface{} {
-	var res []interface{}
+	columns := make([]interface{}, 0, len(input))
 	for _, val := range input {
 		if v, ok := val[columnKey]; ok {
-			res = append(res, v)
+			columns = append(columns, v)
 		}
 	}
-	return res
+	return columns
 }
 
 // array_push()
