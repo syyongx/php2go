@@ -395,13 +395,13 @@ func Nl2br(str string, isXhtml bool) string {
 	return buf.String()
 }
 
-// json_encode()
-func JsonEncode(data []byte, val interface{}) error {
+// json_decode()
+func JsonDecode(data []byte, val interface{}) error {
 	return json.Unmarshal(data, val)
 }
 
-// json_decode()
-func JsonDecode(val interface{}) ([]byte, error) {
+// json_encode()
+func JsonEncode(val interface{}) ([]byte, error) {
 	return json.Marshal(val)
 }
 
