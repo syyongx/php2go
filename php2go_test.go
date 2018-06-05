@@ -234,9 +234,6 @@ func TestMath(t *testing.T) {
 
 	tNumberFormat := NumberFormat(1234567890.777, 2, ".", ",")
 	equal(t, "1,234,567,890.78", tNumberFormat)
-
-	tIsNumeric := IsNumeric("-0xaF")
-	equal(t, true, tIsNumeric)
 }
 
 func TestFile(t *testing.T) {
@@ -258,6 +255,18 @@ func TestFile(t *testing.T) {
 	wd, _ := os.Getwd()
 	tfilesize, _ := FileSize(wd)
 	gt(t, float64(tfilesize), 0)
+}
+
+func TestVariable(t *testing.T) {
+	equal(t, true, Empty(""))
+	equal(t, true, Empty(0))
+	equal(t, true, Empty(0.0))
+	equal(t, true, Empty(false))
+	equal(t, false, Empty([1]string{}))
+	equal(t, true, Empty([]int{}))
+
+	tIsNumeric := IsNumeric("-0xaF")
+	equal(t, true, tIsNumeric)
 }
 
 func TestOther(t *testing.T) {

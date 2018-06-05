@@ -28,6 +28,7 @@ import (
 	"encoding/csv"
 	"runtime"
 	"archive/zip"
+	"reflect"
 )
 
 //////////// Date/Time Functions ////////////
@@ -208,7 +209,7 @@ func ChunkSplit(body string, chunklen uint, end string) string {
 	if l <= 1 || l < chunklen {
 		return body + end
 	}
-	ns := make([]rune, 0, len(runes) + len(erunes))
+	ns := make([]rune, 0, len(runes)+len(erunes))
 	var i uint
 	for i = 0; i < l; i += chunklen {
 		if i+chunklen > l {
@@ -1302,6 +1303,29 @@ func Umask(mask int) int {
 }
 
 //////////// Variable handling Functions ////////////
+
+// empty()
+func Empty(val interface{}) bool {
+	v := reflect.ValueOf(val)
+	switch v.Kind() {
+	case reflect.String, reflect.Array:
+		return v.Len() == 0
+	case reflect.Map, reflect.Slice:
+		return v.Len() == 0 || v.IsNil()
+	case reflect.Bool:
+		return !v.Bool()
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return v.Int() == 0
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+		return v.Uint() == 0
+	case reflect.Float32, reflect.Float64:
+		return v.Float() == 0
+	case reflect.Interface, reflect.Ptr:
+		return v.IsNil()
+	}
+
+	return reflect.DeepEqual(val, reflect.Zero(v.Type()).Interface())
+}
 
 // is_numeric()
 func IsNumeric(val interface{}) bool {

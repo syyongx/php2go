@@ -146,6 +146,7 @@ umask()
 ```
 ### Variable handling Functions
 ```php
+empty()
 is_numeric()
 ```
 ### Other Functions
