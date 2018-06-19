@@ -328,7 +328,7 @@ func Trim(str, characterMask string) string {
 	if characterMask == "" {
 		characterMask = " \\t\\n\\r\\0\\x0B"
 	}
-	return string(bytes.Trim([]byte(str), characterMask))
+	return strings.Trim(str, characterMask)
 }
 
 // ltrim()
@@ -336,7 +336,7 @@ func Ltrim(str, characterMask string) string {
 	if characterMask == "" {
 		characterMask = " \\t\\n\\r\\0\\x0B"
 	}
-	return string(bytes.TrimLeft([]byte(str), characterMask))
+	return strings.TrimLeft(str, characterMask)
 }
 
 // rtrim()
@@ -344,7 +344,7 @@ func Rtrim(str, characterMask string) string {
 	if characterMask == "" {
 		characterMask = " \\t\\n\\r\\0\\x0B"
 	}
-	return string(bytes.TrimRight([]byte(str), characterMask))
+	return strings.TrimRight(str, characterMask)
 }
 
 // explode()
