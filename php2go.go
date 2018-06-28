@@ -312,6 +312,62 @@ func Strstr(haystack string, needle string) string {
 	return haystack[idx+len([]byte(needle))-1:]
 }
 
+// strtr()
+//
+// If the parameter length is 1, type is: map[string]string
+// Strtr("baab", ["ab":"01"]) will return "ba01"
+// If the parameter length is 2, type is: string, string
+// Strtr("baab", "ab", "01") will return "1001", a => 0; b => 1.
+func Strtr(haystack string, params ...interface{}) string {
+	ac := len(params)
+	if ac == 1 {
+		pairs := params[0].(map[string]string)
+		length := len(pairs)
+		if length == 0 {
+			return haystack
+		}
+		oldnew := make([]string, length*2)
+		for o, n := range pairs {
+			if o == "" {
+				return haystack
+			}
+			oldnew = append(oldnew, o, n)
+		}
+		return strings.NewReplacer(oldnew...).Replace(haystack)
+	} else if ac == 2 {
+		from := params[0].(string)
+		to := params[1].(string)
+		trlen, lt := len(from), len(to)
+		if trlen > lt {
+			trlen = lt
+		}
+
+		if trlen == 0 {
+			return haystack
+		} else {
+			str := make([]uint8, len(haystack))
+			var xlat [256]uint8
+			var i int
+			var j uint8
+			for {
+				xlat[j] = j
+				if j++; j == 0 {
+					break
+				}
+			}
+			for i = 0; i < trlen; i++ {
+				xlat[from[i]] = to[i]
+			}
+			for i = 0; i < len(haystack); i ++ {
+				str[i] = xlat[haystack[i]]
+			}
+			return string(str)
+		}
+	}
+
+	return haystack
+}
+
 // str_shuffle()
 func StrShuffle(str string) string {
 	runes := []rune(str)
@@ -324,27 +380,36 @@ func StrShuffle(str string) string {
 }
 
 // trim()
-func Trim(str, characterMask string) string {
-	if characterMask == "" {
-		characterMask = " \\t\\n\\r\\0\\x0B"
+func Trim(str string, characterMask ...string) string {
+	mask := ""
+	if len(characterMask) == 0 {
+		mask = " \\t\\n\\r\\0\\x0B"
+	} else {
+		mask = characterMask[0]
 	}
-	return strings.Trim(str, characterMask)
+	return strings.Trim(str, mask)
 }
 
 // ltrim()
-func Ltrim(str, characterMask string) string {
-	if characterMask == "" {
-		characterMask = " \\t\\n\\r\\0\\x0B"
+func Ltrim(str string, characterMask ...string) string {
+	mask := ""
+	if len(characterMask) == 0 {
+		mask = " \\t\\n\\r\\0\\x0B"
+	} else {
+		mask = characterMask[0]
 	}
-	return strings.TrimLeft(str, characterMask)
+	return strings.TrimLeft(str, mask)
 }
 
 // rtrim()
-func Rtrim(str, characterMask string) string {
-	if characterMask == "" {
-		characterMask = " \\t\\n\\r\\0\\x0B"
+func Rtrim(str string, characterMask ...string) string {
+	mask := ""
+	if len(characterMask) == 0 {
+		mask = " \\t\\n\\r\\0\\x0B"
+	} else {
+		mask = characterMask[0]
 	}
-	return strings.TrimRight(str, characterMask)
+	return strings.TrimRight(str, mask)
 }
 
 // explode()
@@ -1339,7 +1404,7 @@ func IsNumeric(val interface{}) bool {
 			return false
 		}
 		// Trim any whitespace
-		str = strings.Trim(str, " \\t\\n\\r\\v\\f")
+		str = strings.TrimSpace(str)
 		if str[0] == '-' || str[0] == '+' {
 			if len(str) == 1 {
 				return false

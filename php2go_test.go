@@ -118,6 +118,11 @@ func TestString(t *testing.T) {
 
 	tStrWordCount := StrWordCount("a b c")
 	equal(t, []string{"a", "b", "c"}, tStrWordCount)
+
+	tStrtr := Strtr("baab", "ab", "01")
+	equal(t, "1001", tStrtr)
+	tStrtr1 := Strtr("baab", map[string]string{"ab": "01"})
+	equal(t, "ba01", tStrtr1)
 }
 
 func TestArray(t *testing.T) {
