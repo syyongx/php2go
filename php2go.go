@@ -349,19 +349,30 @@ func Strtr(haystack string, params ...interface{}) string {
 			var xlat [256]uint8
 			var i int
 			var j uint8
-			for {
-				xlat[j] = j
-				if j++; j == 0 {
-					break
+			if trlen == 1 {
+				for i = 0; i < len(haystack); i++ {
+					if haystack[i] == from[0] {
+						str[i] = to[0]
+					} else {
+						str[i] = haystack[i]
+					}
 				}
+				return string(str)
+			} else {
+				for {
+					xlat[j] = j
+					if j++; j == 0 {
+						break
+					}
+				}
+				for i = 0; i < trlen; i++ {
+					xlat[from[i]] = to[i]
+				}
+				for i = 0; i < len(haystack); i ++ {
+					str[i] = xlat[haystack[i]]
+				}
+				return string(str)
 			}
-			for i = 0; i < trlen; i++ {
-				xlat[from[i]] = to[i]
-			}
-			for i = 0; i < len(haystack); i ++ {
-				str[i] = xlat[haystack[i]]
-			}
-			return string(str)
 		}
 	}
 
