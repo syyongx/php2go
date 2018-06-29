@@ -153,6 +153,17 @@ func Strrev(str string) string {
 	return string(runes)
 }
 
+// parse_str()
+// Golang url.ParseQuery not same as PHP parse_str when processing array parameter.
+func ParseStr(encodedString string) (map[string][]string, error) {
+	return url.ParseQuery(encodedString)
+}
+
+// http_build_query()
+func HttpBuildQuery(queryData url.Values) string {
+	return queryData.Encode()
+}
+
 // number_format()
 // decimals: Sets the number of decimal points.
 // decPoint: Sets the separator for the decimal point.
@@ -315,7 +326,7 @@ func Strstr(haystack string, needle string) string {
 // strtr()
 //
 // If the parameter length is 1, type is: map[string]string
-// Strtr("baab", ["ab":"01"]) will return "ba01"
+// Strtr("baab", map[string]string{"ab": "01"}) will return "ba01"
 // If the parameter length is 2, type is: string, string
 // Strtr("baab", "ab", "01") will return "1001", a => 0; b => 1.
 func Strtr(haystack string, params ...interface{}) string {

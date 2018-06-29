@@ -124,6 +124,12 @@ func TestString(t *testing.T) {
 	equal(t, "bccb", Strtr("baab", "a", "cd"))
 	tStrtr := Strtr("baab", map[string]string{"ab": "01"})
 	equal(t, "ba01", tStrtr)
+
+	tParseStr, _ := ParseStr("first=value&multi=foo+bar&multi=baz")
+	equal(t, map[string][]string{"first": []string{"value"}, "multi": []string{"foo bar", "baz"}}, tParseStr)
+
+	tHttpBuildQuery := HttpBuildQuery(map[string][]string{"first": []string{"value"}, "multi": []string{"foo bar", "baz"}})
+	equal(t, "first=value&multi=foo+bar&multi=baz", tHttpBuildQuery)
 }
 
 func TestArray(t *testing.T) {

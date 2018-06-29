@@ -61,6 +61,8 @@ crc32()
 levenshtein()
 similar_text()
 soundex()
+parse_str()
+http_build_query()
 ```
 ### URL Functions
 ```php
