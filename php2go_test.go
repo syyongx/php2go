@@ -127,9 +127,6 @@ func TestString(t *testing.T) {
 
 	tParseStr, _ := ParseStr("first=value&multi=foo+bar&multi=baz")
 	equal(t, map[string][]string{"first": []string{"value"}, "multi": []string{"foo bar", "baz"}}, tParseStr)
-
-	tHttpBuildQuery := HttpBuildQuery(map[string][]string{"first": []string{"value"}, "multi": []string{"foo bar", "baz"}})
-	equal(t, "first=value&multi=foo+bar&multi=baz", tHttpBuildQuery)
 }
 
 func TestArray(t *testing.T) {
@@ -205,6 +202,10 @@ func TestUrl(t *testing.T) {
 
 	tBase64Decode, _ := Base64Decode("VGhpcyBpcyBhbiBlbmNvZGVkIHN0cmluZw==")
 	equal(t, "This is an encoded string", tBase64Decode)
+
+
+	tHttpBuildQuery := HttpBuildQuery(map[string][]string{"first": []string{"value"}, "multi": []string{"foo bar", "baz"}})
+	equal(t, "first=value&multi=foo+bar&multi=baz", tHttpBuildQuery)
 }
 
 func TestMath(t *testing.T) {

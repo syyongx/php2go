@@ -62,17 +62,17 @@ levenshtein()
 similar_text()
 soundex()
 parse_str()
-http_build_query()
 ```
 ### URL Functions
 ```php
+base64_encode()
+base64_decode()
 parse_url()
 urlencode()
 urldecode()
 rawurlencode()
 rawurldecode()
-base64_encode()
-base64_decode()
+http_build_query()
 ```
 ### Array(Slice/Map) Functions
 ```php

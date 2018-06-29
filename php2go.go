@@ -159,11 +159,6 @@ func ParseStr(encodedString string) (map[string][]string, error) {
 	return url.ParseQuery(encodedString)
 }
 
-// http_build_query()
-func HttpBuildQuery(queryData url.Values) string {
-	return queryData.Encode()
-}
-
 // number_format()
 // decimals: Sets the number of decimal points.
 // decPoint: Sets the separator for the decimal point.
@@ -796,6 +791,11 @@ func Rawurlencode(str string) string {
 // rawurldecode()
 func Rawurldecode(str string) (string, error) {
 	return url.QueryUnescape(strings.Replace(str, "%20", "+", -1))
+}
+
+// http_build_query()
+func HttpBuildQuery(queryData url.Values) string {
+	return queryData.Encode()
 }
 
 // base64_encode()
