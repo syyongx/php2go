@@ -88,12 +88,11 @@ func Stripos(haystack, needle string, offset int) int {
 		return -1
 	}
 
-	haystack = strings.ToLower(haystack[offset:])
-	needle = strings.ToLower(needle)
+	haystack = haystack[offset:]
 	if offset < 0 {
 		offset += length
 	}
-	pos := strings.Index(haystack, needle)
+	pos := strings.Index(strings.ToLower(haystack), strings.ToLower(needle))
 	if pos == -1 {
 		return -1
 	}
@@ -108,12 +107,13 @@ func Strrpos(haystack, needle string, offset int) int {
 	}
 
 	if offset < 0 {
-		pos = strings.LastIndex(haystack[:offset+length+1], needle)
+		haystack = haystack[:offset+length+1]
 	} else {
-		pos = strings.LastIndex(haystack[offset:], needle)
-		if pos != -1 {
-			pos += offset
-		}
+		haystack = haystack[offset:]
+	}
+	pos = strings.LastIndex(haystack, needle)
+	if offset > 0 && pos != -1 {
+		pos += offset
 	}
 	return pos
 }
@@ -125,15 +125,14 @@ func Strripos(haystack, needle string, offset int) int {
 		return -1
 	}
 
-	haystack = strings.ToLower(haystack)
-	needle = strings.ToLower(needle)
 	if offset < 0 {
-		pos = strings.LastIndex(haystack[:offset+length+1], needle)
+		haystack = haystack[:offset+length+1]
 	} else {
-		pos = strings.LastIndex(haystack[offset:], needle)
-		if pos != -1 {
-			pos += offset
-		}
+		haystack = haystack[offset:]
+	}
+	pos = strings.LastIndex(strings.ToLower(haystack), strings.ToLower(needle))
+	if offset > 0 && pos != -1 {
+		pos += offset
 	}
 	return pos
 }
