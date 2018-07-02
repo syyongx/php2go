@@ -66,26 +66,76 @@ func Usleep(t int64) {
 
 // strpos()
 func Strpos(haystack, needle string, offset int) int {
-	return strings.Index(haystack, needle)
+	length := len(haystack)
+	if length == 0 || offset > length || -offset > length {
+		return -1
+	}
+
+	if offset < 0 {
+		offset += length
+	}
+	pos := strings.Index(haystack[offset:], needle)
+	if pos == -1 {
+		return -1
+	}
+	return pos + offset
 }
 
 // stripos()
 func Stripos(haystack, needle string, offset int) int {
-	haystack = strings.ToLower(haystack)
+	length := len(haystack)
+	if length == 0 || offset > length || -offset > length {
+		return -1
+	}
+
+	haystack = strings.ToLower(haystack[offset:])
 	needle = strings.ToLower(needle)
-	return strings.Index(haystack, needle)
+	if offset < 0 {
+		offset += length
+	}
+	pos := strings.Index(haystack, needle)
+	if pos == -1 {
+		return -1
+	}
+	return pos + offset
 }
 
 // strrpos()
 func Strrpos(haystack, needle string, offset int) int {
-	return strings.LastIndex(haystack, needle)
+	pos, length := 0, len(haystack)
+	if length == 0 || offset > length || -offset > length {
+		return -1
+	}
+
+	if offset < 0 {
+		pos = strings.LastIndex(haystack[:offset+length+1], needle)
+	} else {
+		pos = strings.LastIndex(haystack[offset:], needle)
+		if pos != -1 {
+			pos += offset
+		}
+	}
+	return pos
 }
 
 // strripos()
 func Strripos(haystack, needle string, offset int) int {
+	pos, length := 0, len(haystack)
+	if length == 0 || offset > length || -offset > length {
+		return -1
+	}
+
 	haystack = strings.ToLower(haystack)
 	needle = strings.ToLower(needle)
-	return strings.LastIndex(haystack, needle)
+	if offset < 0 {
+		pos = strings.LastIndex(haystack[:offset+length+1], needle)
+	} else {
+		pos = strings.LastIndex(haystack[offset:], needle)
+		if pos != -1 {
+			pos += offset
+		}
+	}
+	return pos
 }
 
 // str_replace()
@@ -374,7 +424,7 @@ func Strtr(haystack string, params ...interface{}) string {
 				for i = 0; i < trlen; i++ {
 					xlat[from[i]] = to[i]
 				}
-				for i = 0; i < len(haystack); i ++ {
+				for i = 0; i < len(haystack); i++ {
 					str[i] = xlat[haystack[i]]
 				}
 				return string(str)
@@ -881,7 +931,7 @@ func ArrayChunk(s []interface{}, size int) [][]interface{} {
 			end = length
 		}
 		n = append(n, s[i*size:end])
-		i ++
+		i++
 	}
 	return n
 }

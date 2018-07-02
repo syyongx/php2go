@@ -56,8 +56,17 @@ func TestString(t *testing.T) {
 	tMbStrlen := MbStrlen("G简体")
 	equal(t, 3, tMbStrlen)
 
-	tstrpos := Strpos("hello world", "w", 0)
+	tstrpos := Strpos("hello wworld", "w", -6)
 	equal(t, 6, tstrpos)
+
+	tstripos := Stripos("hello Wworld", "w", 8)
+	equal(t, -1, tstripos)
+
+	tstrrpos := Strrpos("hello wworld", "w", -6)
+	equal(t, 6, tstrrpos)
+
+	tstrripos := Strripos("hello wWorld", "w", 0)
+	equal(t, 7, tstrripos)
 
 	timplode := Implode(",", []string{"a", "b", "c"})
 	equal(t, "a,b,c", timplode)
