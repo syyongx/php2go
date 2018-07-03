@@ -152,11 +152,16 @@ umask()
 empty()
 is_numeric()
 ```
+### Program execution Functions
+```
+exec()
+system()
+passthru()
+```
 ### Other Functions
 ```php
 echo()
 uniqid()
-exec()
 exit()
 die()
 getenv()

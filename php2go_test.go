@@ -212,7 +212,6 @@ func TestUrl(t *testing.T) {
 	tBase64Decode, _ := Base64Decode("VGhpcyBpcyBhbiBlbmNvZGVkIHN0cmluZw==")
 	equal(t, "This is an encoded string", tBase64Decode)
 
-
 	tHttpBuildQuery := HttpBuildQuery(map[string][]string{"first": []string{"value"}, "multi": []string{"foo bar", "baz"}})
 	equal(t, "first=value&multi=foo+bar&multi=baz", tHttpBuildQuery)
 }
@@ -289,6 +288,21 @@ func TestVariable(t *testing.T) {
 
 	tIsNumeric := IsNumeric("-0xaF")
 	equal(t, true, tIsNumeric)
+}
+
+func TestProgramExecution(t *testing.T) {
+	var output []string
+	var retVal int
+	tExec := Exec("ls -l", &output, &retVal)
+	gt(t, float64(len(tExec)), 0)
+	equal(t, 0, retVal)
+
+	tSystem := System("ls -l", &retVal)
+	equal(t, 0, retVal)
+	gt(t, float64(len(tSystem)), 0)
+
+	Passthru("echo hello", &retVal)
+	equal(t, 0, retVal)
 }
 
 func TestOther(t *testing.T) {
