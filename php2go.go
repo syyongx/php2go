@@ -1523,8 +1523,6 @@ func IsNumeric(val interface{}) bool {
 func Exec(command string, output *[]string, returnVar *int) string {
 	r, _ := regexp.Compile(`[ ]+`)
 	parts := r.Split(command, -1)
-	fmt.Println(command)
-	fmt.Println(parts)
 	var args []string
 	if len(parts) > 1 {
 		args = parts[1:]
