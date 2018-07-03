@@ -15,6 +15,7 @@ date()
 sleep()
 usleep()
 ```
+
 ### String Functions
 ```php
 strpos()
@@ -63,6 +64,7 @@ similar_text()
 soundex()
 parse_str()
 ```
+
 ### URL Functions
 ```php
 base64_encode()
@@ -74,6 +76,7 @@ rawurlencode()
 rawurldecode()
 http_build_query()
 ```
+
 ### Array(Slice/Map) Functions
 ```php
 array_fill()
@@ -95,6 +98,7 @@ array_combine()
 array_reverse()
 implode()
 ```
+
 ### Mathematical Functions
 ```php
 abs()
@@ -116,6 +120,7 @@ Octdec()
 base_convert()
 is_nan()
 ```
+
 ### Directory/Filesystem Functions
 ```php
 stat()
@@ -147,17 +152,20 @@ disk_total_space()
 glob()
 umask()
 ```
+
 ### Variable handling Functions
 ```php
 empty()
 is_numeric()
 ```
+
 ### Program execution Functions
-```
+```php
 exec()
 system()
 passthru()
 ```
+
 ### Other Functions
 ```php
 echo()
