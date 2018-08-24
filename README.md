@@ -12,6 +12,7 @@ go get github.com/syyongx/php2go
 time()
 strtotime()
 date()
+checkdate()
 sleep()
 usleep()
 ```
