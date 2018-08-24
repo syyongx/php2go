@@ -1,5 +1,5 @@
 # php2go
-Use Golang to implement PHP's common built-in functions. About 120+ functions have been implemented.
+Use Golang to implement PHP's common built-in functions. About 140+ functions have been implemented.
 
 ## Install
 ```shell
