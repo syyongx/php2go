@@ -330,7 +330,7 @@ func TestNetwork(t *testing.T) {
 	equal(t, "localhost", tGethostbyaddr)
 }
 
-func TestOther(t *testing.T) {
+func TestMisc(t *testing.T) {
 	tVersionCompare := VersionCompare("1.3-beta", "1.4Rc1", "<")
 	equal(t, true, tVersionCompare)
 

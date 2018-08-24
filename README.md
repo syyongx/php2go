@@ -177,7 +177,7 @@ ip2long()
 long2ip()
 ```
 
-### Other Functions
+### Misc. Functions
 ```php
 echo()
 uniqid()

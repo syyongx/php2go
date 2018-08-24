@@ -1706,8 +1706,7 @@ func Ip2long(ipAddress string) uint32 {
 	if ip == nil {
 		return 0
 	}
-	ip = ip.To4()
-	return binary.BigEndian.Uint32(ip)
+	return binary.BigEndian.Uint32(ip.To4())
 }
 
 // long2ip()
@@ -1719,7 +1718,7 @@ func Long2ip(properAddress uint32) string {
 	return ip.String()
 }
 
-//////////// Other Functions ////////////
+//////////// Misc. Functions ////////////
 
 // echo
 func Echo(args ...interface{}) {
