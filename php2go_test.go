@@ -310,6 +310,26 @@ func TestProgramExecution(t *testing.T) {
 	equal(t, 0, retVal)
 }
 
+func TestNetwork(t *testing.T) {
+	tGethostname, _ := Gethostname()
+	gt(t, float64(len(tGethostname)), 0)
+
+	tIp2long := Ip2long("8.8.8.8")
+	equal(t, uint32(134744072), tIp2long)
+
+	tLong2ip := Long2ip(134744072)
+	equal(t, "8.8.8.8", tLong2ip)
+
+	tGethostbyname, _ := Gethostbyname("localhost")
+	equal(t, "127.0.0.1", tGethostbyname)
+
+	tGethostbynamel, _ := Gethostbynamel("localhost")
+	gt(t, float64(len(tGethostbynamel)), 0)
+
+	tGethostbyaddr, _ := Gethostbyaddr("127.0.0.1")
+	equal(t, "localhost", tGethostbyaddr)
+}
+
 func TestOther(t *testing.T) {
 	tVersionCompare := VersionCompare("1.3-beta", "1.4Rc1", "<")
 	equal(t, true, tVersionCompare)

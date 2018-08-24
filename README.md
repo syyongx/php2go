@@ -167,6 +167,16 @@ system()
 passthru()
 ```
 
+### Network Functions
+```php
+gethostname()
+gethostbyname()
+gethostbynamel()
+gethostbyaddr()
+ip2long()
+long2ip()
+```
+
 ### Other Functions
 ```php
 echo()
