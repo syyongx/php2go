@@ -17,6 +17,11 @@ func TestTime(t *testing.T) {
 
 	tstrtotime, _ := Strtotime("02/01/2006 15:04:05", "02/01/2016 15:04:05")
 	equal(t, int64(1451747045), tstrtotime)
+	tstrtotime1, _ := Strtotime("3 04 PM", "8 41 PM")
+	equal(t, int64(-62167144740), tstrtotime1)
+
+	equal(t, false, Checkdate(2, 29, 2018))
+	equal(t, true, Checkdate(2, 29, 2020))
 }
 
 func TestString(t *testing.T) {
