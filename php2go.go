@@ -66,7 +66,7 @@ func Checkdate(month, day, year int) bool {
 	}
 	switch month {
 	case 4, 6, 9, 11:
-		if day == 31 {
+		if day > 30 {
 			return false
 		}
 	case 2:
