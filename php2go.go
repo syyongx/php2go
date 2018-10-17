@@ -1440,6 +1440,7 @@ func Fgetcsv(handle *os.File, length int, delimiter rune) ([][]string, error) {
 }
 
 // disk_free_space()
+// Only supports Unix operating systems
 func DiskFreeSpace(directory string) (uint64, error) {
 	fs := syscall.Statfs_t{}
 	err := syscall.Statfs(directory, &fs)
@@ -1450,6 +1451,7 @@ func DiskFreeSpace(directory string) (uint64, error) {
 }
 
 // disk_total_space()
+// Only supports Unix operating systems
 func DiskTotalSpace(directory string) (uint64, error) {
 	fs := syscall.Statfs_t{}
 	err := syscall.Statfs(directory, &fs)
