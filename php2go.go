@@ -2,36 +2,36 @@
 package php2go
 
 import (
-	"time"
-	"fmt"
-	"crypto/md5"
-	"encoding/hex"
-	"io/ioutil"
-	"net/url"
-	"strings"
-	"math"
-	"encoding/base64"
-	"encoding/json"
-	"os"
-	"strconv"
-	"syscall"
+	"archive/zip"
 	"bytes"
-	"unicode/utf8"
-	"path/filepath"
-	"math/rand"
+	"crypto/md5"
 	"crypto/sha1"
+	"encoding/base64"
+	"encoding/binary"
+	"encoding/csv"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
 	"hash/crc32"
 	"html"
-	"unicode"
 	"io"
-	"encoding/csv"
-	"runtime"
-	"archive/zip"
-	"reflect"
-	"os/exec"
-	"regexp"
+	"io/ioutil"
+	"math"
+	"math/rand"
 	"net"
-	"encoding/binary"
+	"net/url"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"reflect"
+	"regexp"
+	"runtime"
+	"strconv"
+	"strings"
+	"syscall"
+	"time"
+	"unicode"
+	"unicode/utf8"
 )
 
 //////////// Date/Time Functions ////////////
@@ -1976,6 +1976,29 @@ func VersionCompare(version1, version2, operator string) bool {
 // zip_open()
 func ZipOpen(filename string) (*zip.ReadCloser, error) {
 	return zip.OpenReader(filename)
+}
+
+// pack()
+func Pack(order binary.ByteOrder, data interface{}) (string, error) {
+	buf := new(bytes.Buffer)
+	err := binary.Write(buf, order, data)
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
+}
+
+// unpack()
+func Unpack(order binary.ByteOrder, data string) (interface{}, error) {
+	var result []byte
+	r := bytes.NewReader([]byte(data))
+	err := binary.Read(r, order, &result)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 // Ternary expression

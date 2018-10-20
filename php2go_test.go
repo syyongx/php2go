@@ -1,11 +1,13 @@
 package php2go
 
 import (
-	"testing"
-	"reflect"
 	"bytes"
-	"unicode/utf8"
+	"encoding/binary"
+	"fmt"
 	"os"
+	"reflect"
+	"testing"
+	"unicode/utf8"
 )
 
 func TestTime(t *testing.T) {
@@ -336,6 +338,14 @@ func TestMisc(t *testing.T) {
 
 	tMemoryGetUsage := MemoryGetUsage(true)
 	gt(t, float64(tMemoryGetUsage), 0)
+
+	tPack, err := Pack(binary.LittleEndian, []byte("abc"))
+	fmt.Println(err)
+	fmt.Println(tPack)
+
+	tUnpack, err := Unpack(binary.LittleEndian, tPack)
+	fmt.Println(err)
+	fmt.Println(tUnpack)
 }
 
 func BenchmarkFn(b *testing.B) {
