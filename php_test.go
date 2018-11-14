@@ -141,8 +141,9 @@ func TestString(t *testing.T) {
 	tStrtr := Strtr("baab", map[string]string{"ab": "01"})
 	equal(t, "ba01", tStrtr)
 
-	tParseStr, _ := ParseStr("first=value&multi=foo+bar&multi=baz")
-	equal(t, map[string][]string{"first": []string{"value"}, "multi": []string{"foo bar", "baz"}}, tParseStr)
+	tParseStr := make(map[string]interface{})
+	_ = ParseStr("f[a][]=m&f[a][]=n", tParseStr)
+	equal(t, "map[f:map[a:[m n]]]", fmt.Sprint(tParseStr))
 }
 
 func TestArray(t *testing.T) {
