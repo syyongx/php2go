@@ -151,8 +151,6 @@ chown()
 fclose()
 filemtime()
 fgetcsv()
-disk_free_space()
-disk_total_space()
 glob()
 umask()
 ```
