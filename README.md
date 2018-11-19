@@ -6,6 +6,9 @@ Use Golang to implement PHP's common built-in functions. About 140+ functions ha
 go get github.com/syyongx/php2go
 ```
 
+## Requirements
+Go 1.10 or above.
+
 ## PHP Functions
 ### Date/Time Functions
 ```php
