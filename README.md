@@ -152,7 +152,6 @@ fclose()
 filemtime()
 fgetcsv()
 glob()
-umask()
 ```
 
 ### Variable handling Functions

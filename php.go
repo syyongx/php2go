@@ -1589,11 +1589,6 @@ func Glob(pattern string) ([]string, error) {
 	return filepath.Glob(pattern)
 }
 
-// umask()
-func Umask(mask int) int {
-	return syscall.Umask(mask)
-}
-
 //////////// Variable handling Functions ////////////
 
 // empty()
