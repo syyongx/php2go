@@ -317,13 +317,13 @@ func ParseStr(encodedString string, result map[string]interface{}) error {
 	}
 
 	// split encodedString.
-	items := strings.Split(encodedString, "&")
-	for _, item := range items {
-		pos := strings.Index(item, "=")
+	parts := strings.Split(encodedString, "&")
+	for _, part := range parts {
+		pos := strings.Index(part, "=")
 		if pos <= 0 {
 			continue
 		}
-		key, err := url.QueryUnescape(item[:pos])
+		key, err := url.QueryUnescape(part[:pos])
 		if err != nil {
 			return err
 		}
@@ -333,7 +333,7 @@ func ParseStr(encodedString string, result map[string]interface{}) error {
 		if key == "" || key[0] == '[' {
 			continue
 		}
-		value, err := url.QueryUnescape(item[pos+1:])
+		value, err := url.QueryUnescape(part[pos+1:])
 		if err != nil {
 			return err
 		}
