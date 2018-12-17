@@ -6,12 +6,12 @@ import (
 	"syscall"
 )
 
-// umask()
+// Umask umask()
 func Umask(mask int) int {
 	return syscall.Umask(mask)
 }
 
-// disk_free_space()
+// DiskFreeSpace disk_free_space()
 func DiskFreeSpace(directory string) (uint64, error) {
 	fs := syscall.Statfs_t{}
 	err := syscall.Statfs(directory, &fs)
@@ -21,7 +21,7 @@ func DiskFreeSpace(directory string) (uint64, error) {
 	return fs.Bfree * uint64(fs.Bsize), nil
 }
 
-// disk_total_space()
+// DiskTotalSpace disk_total_space()
 func DiskTotalSpace(directory string) (uint64, error) {
 	fs := syscall.Statfs_t{}
 	err := syscall.Statfs(directory, &fs)
