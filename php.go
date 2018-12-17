@@ -37,12 +37,12 @@ import (
 
 //////////// Date/Time Functions ////////////
 
-// time()
+// Time time()
 func Time() int64 {
 	return time.Now().Unix()
 }
 
-// strtotime()
+// Strtotime strtotime()
 // Strtotime("02/01/2006 15:04:05", "02/01/2016 15:04:05") == 1451747045
 // Strtotime("3 04 PM", "8 41 PM") == -62167144740
 func Strtotime(format, strtime string) (int64, error) {
@@ -53,13 +53,13 @@ func Strtotime(format, strtime string) (int64, error) {
 	return t.Unix(), nil
 }
 
-// date()
+// Date date()
 // Date("02/01/2006 15:04:05 PM", 1524799394)
 func Date(format string, timestamp int64) string {
 	return time.Unix(timestamp, 0).Format(format)
 }
 
-// checkdate()
+// Checkdate checkdate()
 // Validate a Gregorian date
 func Checkdate(month, day, year int) bool {
 	if month < 1 || month > 12 || day < 1 || day > 31 || year < 1 || year > 32767 {
@@ -84,19 +84,19 @@ func Checkdate(month, day, year int) bool {
 	return true
 }
 
-// sleep()
+// Sleep sleep()
 func Sleep(t int64) {
 	time.Sleep(time.Duration(t) * time.Second)
 }
 
-// usleep()
+// Usleep usleep()
 func Usleep(t int64) {
 	time.Sleep(time.Duration(t) * time.Microsecond)
 }
 
 //////////// String Functions ////////////
 
-// strpos()
+// Strpos strpos()
 func Strpos(haystack, needle string, offset int) int {
 	length := len(haystack)
 	if length == 0 || offset > length || -offset > length {
@@ -113,7 +113,7 @@ func Strpos(haystack, needle string, offset int) int {
 	return pos + offset
 }
 
-// stripos()
+// Stripos stripos()
 func Stripos(haystack, needle string, offset int) int {
 	length := len(haystack)
 	if length == 0 || offset > length || -offset > length {
@@ -131,7 +131,7 @@ func Stripos(haystack, needle string, offset int) int {
 	return pos + offset
 }
 
-// strrpos()
+// Strrpos strrpos()
 func Strrpos(haystack, needle string, offset int) int {
 	pos, length := 0, len(haystack)
 	if length == 0 || offset > length || -offset > length {
@@ -150,7 +150,7 @@ func Strrpos(haystack, needle string, offset int) int {
 	return pos
 }
 
-// strripos()
+// Strripos strripos()
 func Strripos(haystack, needle string, offset int) int {
 	pos, length := 0, len(haystack)
 	if length == 0 || offset > length || -offset > length {
@@ -169,22 +169,22 @@ func Strripos(haystack, needle string, offset int) int {
 	return pos
 }
 
-// str_replace()
+// StrReplace str_replace()
 func StrReplace(search, replace, subject string, count int) string {
 	return strings.Replace(subject, search, replace, count)
 }
 
-// strtoupper()
+// Strtoupper strtoupper()
 func Strtoupper(str string) string {
 	return strings.ToUpper(str)
 }
 
-// strtolower()
+// Strtolower strtolower()
 func Strtolower(str string) string {
 	return strings.ToLower(str)
 }
 
-// ucfirst()
+// Ucfirst ucfirst()
 func Ucfirst(str string) string {
 	for _, v := range str {
 		u := string(unicode.ToUpper(v))
@@ -193,7 +193,7 @@ func Ucfirst(str string) string {
 	return ""
 }
 
-// lcfirst()
+// Lcfirst lcfirst()
 func Lcfirst(str string) string {
 	for _, v := range str {
 		u := string(unicode.ToLower(v))
@@ -202,12 +202,12 @@ func Lcfirst(str string) string {
 	return ""
 }
 
-// ucwords()
+// Ucwords ucwords()
 func Ucwords(str string) string {
 	return strings.Title(str)
 }
 
-// substr()
+// Substr substr()
 func Substr(str string, start uint, length int) string {
 	if start < 0 || length < -1 {
 		return str
@@ -225,7 +225,7 @@ func Substr(str string, start uint, length int) string {
 	return str[start:end]
 }
 
-// strrev()
+// Strrev strrev()
 func Strrev(str string) string {
 	runes := []rune(str)
 	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
@@ -234,7 +234,7 @@ func Strrev(str string) string {
 	return string(runes)
 }
 
-// parse_str()
+// ParseStr parse_str()
 // f1=m&f2=n -> map[f1:m f2:n]
 // f[a]=m&f[b]=n -> map[f:map[a:m b:n]]
 // f[a][a]=m&f[a][b]=n -> map[f:map[a:map[a:m b:n]]]
@@ -384,7 +384,7 @@ func ParseStr(encodedString string, result map[string]interface{}) error {
 	return nil
 }
 
-// number_format()
+// NumberFormat number_format()
 // decimals: Sets the number of decimal points.
 // decPoint: Sets the separator for the decimal point.
 // thousandsSep: Sets the thousands separator.
@@ -412,7 +412,7 @@ func NumberFormat(number float64, decimals uint, decPoint, thousandsSep string) 
 	pos := len(tmp) - 1
 	for i := l1 - 1; i >= 0; i, n, pos = i-1, n+1, pos-1 {
 		if l2 > 0 && n > 0 && n%3 == 0 {
-			for j, _ := range sep {
+			for j := range sep {
 				tmp[pos] = sep[l2-j-1]
 				pos--
 			}
@@ -430,7 +430,7 @@ func NumberFormat(number float64, decimals uint, decPoint, thousandsSep string) 
 	return s
 }
 
-// chunk_split()
+// ChunkSplit chunk_split()
 func ChunkSplit(body string, chunklen uint, end string) string {
 	if end == "" {
 		end = "\r\n"
@@ -453,12 +453,12 @@ func ChunkSplit(body string, chunklen uint, end string) string {
 	return string(ns)
 }
 
-// str_word_count()
+// StrWordCount str_word_count()
 func StrWordCount(str string) []string {
 	return strings.Fields(str)
 }
 
-// wordwrap()
+// Wordwrap wordwrap()
 func Wordwrap(str string, width uint, br string) string {
 	if br == "" {
 		br = "\n"
@@ -516,22 +516,22 @@ func Wordwrap(str string, width uint, br string) string {
 	return buf.String()
 }
 
-// strlen()
+// Strlen strlen()
 func Strlen(str string) int {
 	return len(str)
 }
 
-// mb_strlen()
+// MbStrlen mb_strlen()
 func MbStrlen(str string) int {
 	return utf8.RuneCountInString(str)
 }
 
-// str_repeat()
+// StrRepeat str_repeat()
 func StrRepeat(input string, multiplier int) string {
 	return strings.Repeat(input, multiplier)
 }
 
-// strstr()
+// Strstr strstr()
 func Strstr(haystack string, needle string) string {
 	if needle == "" {
 		return ""
@@ -543,7 +543,7 @@ func Strstr(haystack string, needle string) string {
 	return haystack[idx+len([]byte(needle))-1:]
 }
 
-// strtr()
+// Strtr strtr()
 //
 // If the parameter length is 1, type is: map[string]string
 // Strtr("baab", map[string]string{"ab": "01"}) will return "ba01"
@@ -572,45 +572,44 @@ func Strtr(haystack string, params ...interface{}) string {
 		if trlen > lt {
 			trlen = lt
 		}
-
 		if trlen == 0 {
 			return haystack
-		} else {
-			str := make([]uint8, len(haystack))
-			var xlat [256]uint8
-			var i int
-			var j uint8
-			if trlen == 1 {
-				for i = 0; i < len(haystack); i++ {
-					if haystack[i] == from[0] {
-						str[i] = to[0]
-					} else {
-						str[i] = haystack[i]
-					}
+		}
+
+		str := make([]uint8, len(haystack))
+		var xlat [256]uint8
+		var i int
+		var j uint8
+		if trlen == 1 {
+			for i = 0; i < len(haystack); i++ {
+				if haystack[i] == from[0] {
+					str[i] = to[0]
+				} else {
+					str[i] = haystack[i]
 				}
-				return string(str)
-			} else {
-				for {
-					xlat[j] = j
-					if j++; j == 0 {
-						break
-					}
-				}
-				for i = 0; i < trlen; i++ {
-					xlat[from[i]] = to[i]
-				}
-				for i = 0; i < len(haystack); i++ {
-					str[i] = xlat[haystack[i]]
-				}
-				return string(str)
+			}
+			return string(str)
+		}
+		// trlen != 1
+		for {
+			xlat[j] = j
+			if j++; j == 0 {
+				break
 			}
 		}
+		for i = 0; i < trlen; i++ {
+			xlat[from[i]] = to[i]
+		}
+		for i = 0; i < len(haystack); i++ {
+			str[i] = xlat[haystack[i]]
+		}
+		return string(str)
 	}
 
 	return haystack
 }
 
-// str_shuffle()
+// StrShuffle str_shuffle()
 func StrShuffle(str string) string {
 	runes := []rune(str)
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -621,7 +620,7 @@ func StrShuffle(str string) string {
 	return string(s)
 }
 
-// trim()
+// Trim trim()
 func Trim(str string, characterMask ...string) string {
 	mask := ""
 	if len(characterMask) == 0 {
@@ -632,7 +631,7 @@ func Trim(str string, characterMask ...string) string {
 	return strings.Trim(str, mask)
 }
 
-// ltrim()
+// Ltrim ltrim()
 func Ltrim(str string, characterMask ...string) string {
 	mask := ""
 	if len(characterMask) == 0 {
@@ -643,7 +642,7 @@ func Ltrim(str string, characterMask ...string) string {
 	return strings.TrimLeft(str, mask)
 }
 
-// rtrim()
+// Rtrim rtrim()
 func Rtrim(str string, characterMask ...string) string {
 	mask := ""
 	if len(characterMask) == 0 {
@@ -654,23 +653,23 @@ func Rtrim(str string, characterMask ...string) string {
 	return strings.TrimRight(str, mask)
 }
 
-// explode()
+// Explode explode()
 func Explode(delimiter, str string) []string {
 	return strings.Split(str, delimiter)
 }
 
-// chr()
+// Chr chr()
 func Chr(ascii int) string {
 	return string(ascii)
 }
 
-// ord()
+// Ord ord()
 func Ord(char string) int {
 	r, _ := utf8.DecodeRune([]byte(char))
 	return int(r)
 }
 
-// nl2br()
+// Nl2br nl2br()
 // \n\r, \r\n, \r, \n
 func Nl2br(str string, isXhtml bool) string {
 	r, n, runes := '\r', '\n', []rune(str)
@@ -703,17 +702,17 @@ func Nl2br(str string, isXhtml bool) string {
 	return buf.String()
 }
 
-// json_decode()
-func JsonDecode(data []byte, val interface{}) error {
+// JSONDecode json_decode()
+func JSONDecode(data []byte, val interface{}) error {
 	return json.Unmarshal(data, val)
 }
 
-// json_encode()
-func JsonEncode(val interface{}) ([]byte, error) {
+// JSONEncode json_encode()
+func JSONEncode(val interface{}) ([]byte, error) {
 	return json.Marshal(val)
 }
 
-// addslashes()
+// Addslashes addslashes()
 func Addslashes(str string) string {
 	var buf bytes.Buffer
 	for _, char := range str {
@@ -726,7 +725,7 @@ func Addslashes(str string) string {
 	return buf.String()
 }
 
-// stripslashes()
+// Stripslashes stripslashes()
 func Stripslashes(str string) string {
 	var buf bytes.Buffer
 	l, skip := len(str), false
@@ -744,7 +743,7 @@ func Stripslashes(str string) string {
 	return buf.String()
 }
 
-// quotemeta()
+// Quotemeta quotemeta()
 func Quotemeta(str string) string {
 	var buf bytes.Buffer
 	for _, char := range str {
@@ -757,24 +756,24 @@ func Quotemeta(str string) string {
 	return buf.String()
 }
 
-// htmlentities()
+// Htmlentities htmlentities()
 func Htmlentities(str string) string {
 	return html.EscapeString(str)
 }
 
-// html_entity_decode()
-func HtmlEntityDecode(str string) string {
+// HTMLEntityDecode html_entity_decode()
+func HTMLEntityDecode(str string) string {
 	return html.UnescapeString(str)
 }
 
-// md5()
+// Md5 md5()
 func Md5(str string) string {
 	hash := md5.New()
 	hash.Write([]byte(str))
 	return hex.EncodeToString(hash.Sum(nil))
 }
 
-// md5_file()
+// Md5File md5_file()
 func Md5File(path string) (string, error) {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -785,14 +784,14 @@ func Md5File(path string) (string, error) {
 	return hex.EncodeToString(hash.Sum(nil)), nil
 }
 
-// sha1()
+// Sha1 sha1()
 func Sha1(str string) string {
 	hash := sha1.New()
 	hash.Write([]byte(str))
 	return hex.EncodeToString(hash.Sum(nil))
 }
 
-// sha1_file()
+// Sha1File sha1_file()
 func Sha1File(path string) (string, error) {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -803,12 +802,12 @@ func Sha1File(path string) (string, error) {
 	return hex.EncodeToString(hash.Sum(nil)), nil
 }
 
-// crc32()
+// Crc32 crc32()
 func Crc32(str string) uint32 {
 	return crc32.ChecksumIEEE([]byte(str))
 }
 
-// levenshtein()
+// Levenshtein levenshtein()
 // costIns: Defines the cost of insertion.
 // costRep: Defines the cost of replacement.
 // costDel: Defines the cost of deletion.
@@ -861,7 +860,7 @@ func Levenshtein(str1, str2 string, costIns, costRep, costDel int) int {
 	return c0
 }
 
-// similar_text()
+// SimilarText similar_text()
 func SimilarText(first, second string, percent *float64) int {
 	var similarText func(string, string, int, int) int
 	similarText = func(str1, str2 string, len1, len2 int) int {
@@ -906,7 +905,7 @@ func SimilarText(first, second string, percent *float64) int {
 	return sim
 }
 
-// soundex()
+// Soundex soundex()
 // Calculate the soundex key of a string.
 func Soundex(str string) string {
 	if str == "" {
@@ -959,10 +958,10 @@ func Soundex(str string) string {
 
 //////////// URL Functions ////////////
 
-// parse_url()
+// ParseURL parse_url()
 // Parse a URL and return its components
 // -1: all; 1: scheme; 2: host; 4: port; 8: user; 16: pass; 32: path; 64: query; 128: fragment
-func ParseUrl(str string, component int) (map[string]string, error) {
+func ParseURL(str string, component int) (map[string]string, error) {
 	u, err := url.Parse(str)
 	if err != nil {
 		return nil, err
@@ -998,37 +997,37 @@ func ParseUrl(str string, component int) (map[string]string, error) {
 	return components, nil
 }
 
-// urlencode()
-func UrlEncode(str string) string {
+// URLEncode urlencode()
+func URLEncode(str string) string {
 	return url.QueryEscape(str)
 }
 
-// urldecode()
-func UrlDecode(str string) (string, error) {
+// URLDecode urldecode()
+func URLDecode(str string) (string, error) {
 	return url.QueryUnescape(str)
 }
 
-// rawurlencode()
+// Rawurlencode rawurlencode()
 func Rawurlencode(str string) string {
 	return strings.Replace(url.QueryEscape(str), "+", "%20", -1)
 }
 
-// rawurldecode()
+// Rawurldecode rawurldecode()
 func Rawurldecode(str string) (string, error) {
 	return url.QueryUnescape(strings.Replace(str, "%20", "+", -1))
 }
 
-// http_build_query()
-func HttpBuildQuery(queryData url.Values) string {
+// HTTPBuildQuery http_build_query()
+func HTTPBuildQuery(queryData url.Values) string {
 	return queryData.Encode()
 }
 
-// base64_encode()
+// Base64Encode base64_encode()
 func Base64Encode(str string) string {
 	return base64.StdEncoding.EncodeToString([]byte(str))
 }
 
-// base64_decode()
+// Base64Decode base64_decode()
 func Base64Decode(str string) (string, error) {
 	data, err := base64.StdEncoding.DecodeString(str)
 	if err != nil {
@@ -1039,7 +1038,7 @@ func Base64Decode(str string) (string, error) {
 
 //////////// Array(Slice/Map) Functions ////////////
 
-// array_fill()
+// ArrayFill array_fill()
 func ArrayFill(startIndex int, num uint, value interface{}) map[int]interface{} {
 	m := make(map[int]interface{})
 	var i uint
@@ -1050,7 +1049,7 @@ func ArrayFill(startIndex int, num uint, value interface{}) map[int]interface{} 
 	return m
 }
 
-// array_flip()
+// ArrayFlip array_flip()
 func ArrayFlip(m map[interface{}]interface{}) map[interface{}]interface{} {
 	n := make(map[interface{}]interface{})
 	for i, v := range m {
@@ -1059,17 +1058,17 @@ func ArrayFlip(m map[interface{}]interface{}) map[interface{}]interface{} {
 	return n
 }
 
-// array_keys()
+// ArrayKeys array_keys()
 func ArrayKeys(elements map[interface{}]interface{}) []interface{} {
 	i, keys := 0, make([]interface{}, len(elements))
-	for key, _ := range elements {
+	for key := range elements {
 		keys[i] = key
 		i++
 	}
 	return keys
 }
 
-// array_values()
+// ArrayValues array_values()
 func ArrayValues(elements map[interface{}]interface{}) []interface{} {
 	i, vals := 0, make([]interface{}, len(elements))
 	for _, val := range elements {
@@ -1079,7 +1078,7 @@ func ArrayValues(elements map[interface{}]interface{}) []interface{} {
 	return vals
 }
 
-// array_merge()
+// ArrayMerge array_merge()
 func ArrayMerge(ss ...[]interface{}) []interface{} {
 	n := 0
 	for _, v := range ss {
@@ -1092,7 +1091,7 @@ func ArrayMerge(ss ...[]interface{}) []interface{} {
 	return s
 }
 
-// array_chunk()
+// ArrayChunk array_chunk()
 func ArrayChunk(s []interface{}, size int) [][]interface{} {
 	if size < 1 {
 		panic("size: cannot be less than 1")
@@ -1111,7 +1110,7 @@ func ArrayChunk(s []interface{}, size int) [][]interface{} {
 	return n
 }
 
-// array_pad()
+// ArrayPad array_pad()
 func ArrayPad(s []interface{}, size int, val interface{}) []interface{} {
 	if size == 0 || (size > 0 && size < len(s)) || (size < 0 && size > -len(s)) {
 		return s
@@ -1127,12 +1126,11 @@ func ArrayPad(s []interface{}, size int, val interface{}) []interface{} {
 	}
 	if size > 0 {
 		return append(s, tmp...)
-	} else {
-		return append(tmp, s...)
 	}
+	return append(tmp, s...)
 }
 
-// array_slice()
+// ArraySlice array_slice()
 func ArraySlice(s []interface{}, offset, length uint) []interface{} {
 	if offset > uint(len(s)) {
 		panic("offset: the offset is less than the length of s")
@@ -1144,7 +1142,7 @@ func ArraySlice(s []interface{}, offset, length uint) []interface{} {
 	return s[offset:]
 }
 
-// array_rand()
+// ArrayRand array_rand()
 func ArrayRand(elements []interface{}) []interface{} {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	n := make([]interface{}, len(elements))
@@ -1154,7 +1152,7 @@ func ArrayRand(elements []interface{}) []interface{} {
 	return n
 }
 
-// array_column()
+// ArrayColumn array_column()
 func ArrayColumn(input map[string]map[string]interface{}, columnKey string) []interface{} {
 	columns := make([]interface{}, 0, len(input))
 	for _, val := range input {
@@ -1165,14 +1163,14 @@ func ArrayColumn(input map[string]map[string]interface{}, columnKey string) []in
 	return columns
 }
 
-// array_push()
+// ArrayPush array_push()
 // Push one or more elements onto the end of slice
 func ArrayPush(s *[]interface{}, elements ...interface{}) int {
 	*s = append(*s, elements...)
 	return len(*s)
 }
 
-// array_pop()
+// ArrayPop array_pop()
 // Pop the element off the end of slice
 func ArrayPop(s *[]interface{}) interface{} {
 	if len(*s) == 0 {
@@ -1184,14 +1182,14 @@ func ArrayPop(s *[]interface{}) interface{} {
 	return e
 }
 
-// array_unshift()
+// ArrayUnshift array_unshift()
 // Prepend one or more elements to the beginning of a slice
 func ArrayUnshift(s *[]interface{}, elements ...interface{}) int {
 	*s = append(elements, *s...)
 	return len(*s)
 }
 
-// array_shift()
+// ArrayShift array_shift()
 // Shift an element off the beginning of slice
 func ArrayShift(s *[]interface{}) interface{} {
 	if len(*s) == 0 {
@@ -1202,13 +1200,13 @@ func ArrayShift(s *[]interface{}) interface{} {
 	return f
 }
 
-// array_key_exists()
+// ArrayKeyExists array_key_exists()
 func ArrayKeyExists(key interface{}, m map[interface{}]interface{}) bool {
 	_, ok := m[key]
 	return ok
 }
 
-// array_combine()
+// ArrayCombine array_combine()
 func ArrayCombine(s1, s2 []interface{}) map[interface{}]interface{} {
 	if len(s1) != len(s2) {
 		panic("the number of elements for each slice isn't equal")
@@ -1220,7 +1218,7 @@ func ArrayCombine(s1, s2 []interface{}) map[interface{}]interface{} {
 	return m
 }
 
-// array_reverse()
+// ArrayReverse array_reverse()
 func ArrayReverse(s []interface{}) []interface{} {
 	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
 		s[i], s[j] = s[j], s[i]
@@ -1228,7 +1226,7 @@ func ArrayReverse(s []interface{}) []interface{} {
 	return s
 }
 
-// implode()
+// Implode implode()
 func Implode(glue string, pieces []string) string {
 	var buf bytes.Buffer
 	l := len(pieces)
@@ -1243,12 +1241,12 @@ func Implode(glue string, pieces []string) string {
 
 //////////// Mathematical Functions ////////////
 
-// abs()
+// Abs abs()
 func Abs(number float64) float64 {
 	return math.Abs(number)
 }
 
-// rand()
+// Rand rand()
 func Rand(min, max int) int {
 	if min > max {
 		panic("min: min cannot be greater than max")
@@ -1258,27 +1256,27 @@ func Rand(min, max int) int {
 	return n/((math.MaxInt32+1)/(max-min+1)) + min
 }
 
-// round()
+// Round round()
 func Round(value float64) float64 {
 	return math.Floor(value + 0.5)
 }
 
-// floor()
+// Floor floor()
 func Floor(value float64) float64 {
 	return math.Floor(value)
 }
 
-// ceil()
+// Ceil ceil()
 func Ceil(value float64) float64 {
 	return math.Ceil(value)
 }
 
-// pi()
+// Pi pi()
 func Pi() float64 {
 	return math.Pi
 }
 
-// max()
+// Max max()
 func Max(nums ...float64) float64 {
 	if len(nums) < 2 {
 		panic("nums: the nums length is less than 2")
@@ -1290,7 +1288,7 @@ func Max(nums ...float64) float64 {
 	return max
 }
 
-// min()
+// Min min()
 func Min(nums ...float64) float64 {
 	if len(nums) < 2 {
 		panic("nums: the nums length is less than 2")
@@ -1302,12 +1300,12 @@ func Min(nums ...float64) float64 {
 	return min
 }
 
-// decbin()
+// Decbin decbin()
 func Decbin(number int64) string {
 	return strconv.FormatInt(number, 2)
 }
 
-// bindec()
+// Bindec bindec()
 func Bindec(str string) (string, error) {
 	i, err := strconv.ParseInt(str, 2, 0)
 	if err != nil {
@@ -1316,7 +1314,7 @@ func Bindec(str string) (string, error) {
 	return strconv.FormatInt(i, 10), nil
 }
 
-// hex2bin()
+// Hex2bin hex2bin()
 func Hex2bin(data string) (string, error) {
 	i, err := strconv.ParseInt(data, 16, 0)
 	if err != nil {
@@ -1325,7 +1323,7 @@ func Hex2bin(data string) (string, error) {
 	return strconv.FormatInt(i, 2), nil
 }
 
-// bin2hex()
+// Bin2hex bin2hex()
 func Bin2hex(str string) (string, error) {
 	i, err := strconv.ParseInt(str, 2, 0)
 	if err != nil {
@@ -1334,27 +1332,27 @@ func Bin2hex(str string) (string, error) {
 	return strconv.FormatInt(i, 16), nil
 }
 
-// dechex()
+// Dechex dechex()
 func Dechex(number int64) string {
 	return strconv.FormatInt(number, 16)
 }
 
-// hexdec()
+// Hexdec hexdec()
 func Hexdec(str string) (int64, error) {
 	return strconv.ParseInt(str, 16, 0)
 }
 
-// decoct()
+// Decoct decoct()
 func Decoct(number int64) string {
 	return strconv.FormatInt(number, 8)
 }
 
-// Octdec()
+// Octdec Octdec()
 func Octdec(str string) (int64, error) {
 	return strconv.ParseInt(str, 8, 0)
 }
 
-// base_convert()
+// BaseConvert base_convert()
 func BaseConvert(number string, frombase, tobase int) (string, error) {
 	i, err := strconv.ParseInt(number, frombase, 0)
 	if err != nil {
@@ -1363,19 +1361,19 @@ func BaseConvert(number string, frombase, tobase int) (string, error) {
 	return strconv.FormatInt(i, tobase), nil
 }
 
-// is_nan()
+// IsNan is_nan()
 func IsNan(val float64) bool {
 	return math.IsNaN(val)
 }
 
 //////////// Directory/Filesystem Functions ////////////
 
-// stat()
+// Stat stat()
 func Stat(filename string) (os.FileInfo, error) {
 	return os.Stat(filename)
 }
 
-// pathinfo()
+// Pathinfo pathinfo()
 // -1: all; 1: dirname; 2: basename; 4: extension; 8: filename
 // Usage:
 // Pathinfo("/home/go/path/src/php2go/php2go.go", 1|2|4|8)
@@ -1416,7 +1414,7 @@ func Pathinfo(path string, options int) map[string]string {
 	return info
 }
 
-// file_exists()
+// FileExists file_exists()
 func FileExists(filename string) bool {
 	_, err := os.Stat(filename)
 	if err != nil && os.IsNotExist(err) {
@@ -1425,7 +1423,7 @@ func FileExists(filename string) bool {
 	return true
 }
 
-// is_file()
+// IsFile is_file()
 func IsFile(filename string) bool {
 	_, err := os.Stat(filename)
 	if err != nil && os.IsNotExist(err) {
@@ -1434,7 +1432,7 @@ func IsFile(filename string) bool {
 	return true
 }
 
-// is_dir()
+// IsDir is_dir()
 func IsDir(filename string) (bool, error) {
 	fd, err := os.Stat(filename)
 	if err != nil {
@@ -1444,7 +1442,7 @@ func IsDir(filename string) (bool, error) {
 	return fm.IsDir(), nil
 }
 
-// filesize()
+// FileSize filesize()
 func FileSize(filename string) (int64, error) {
 	info, err := os.Stat(filename)
 	if err != nil && os.IsNotExist(err) {
@@ -1453,28 +1451,28 @@ func FileSize(filename string) (int64, error) {
 	return info.Size(), nil
 }
 
-// file_put_contents()
+// FilePutContents file_put_contents()
 func FilePutContents(filename string, data string, mode os.FileMode) error {
 	return ioutil.WriteFile(filename, []byte(data), mode)
 }
 
-// file_get_contents()
+// FileGetContents file_get_contents()
 func FileGetContents(filename string) (string, error) {
 	data, err := ioutil.ReadFile(filename)
 	return string(data), err
 }
 
-// unlink()
+// Unlink unlink()
 func Unlink(filename string) error {
 	return os.Remove(filename)
 }
 
-// delete()
+// Delete delete()
 func Delete(filename string) error {
 	return os.Remove(filename)
 }
 
-// copy()
+// Copy copy()
 func Copy(source, dest string) (bool, error) {
 	fd1, err := os.Open(source)
 	if err != nil {
@@ -1493,7 +1491,7 @@ func Copy(source, dest string) (bool, error) {
 	return true, nil
 }
 
-// is_readable()
+// IsReadable is_readable()
 func IsReadable(filename string) bool {
 	_, err := syscall.Open(filename, syscall.O_RDONLY, 0)
 	if err != nil {
@@ -1502,7 +1500,7 @@ func IsReadable(filename string) bool {
 	return true
 }
 
-// is_writeable()
+// IsWriteable is_writeable()
 func IsWriteable(filename string) bool {
 	_, err := syscall.Open(filename, syscall.O_WRONLY, 0)
 	if err != nil {
@@ -1511,12 +1509,12 @@ func IsWriteable(filename string) bool {
 	return true
 }
 
-// rename()
+// Rename rename()
 func Rename(oldname, newname string) error {
 	return os.Rename(oldname, newname)
 }
 
-// touch()
+// Touch touch()
 func Touch(filename string) (bool, error) {
 	fd, err := os.OpenFile(filename, os.O_RDONLY|os.O_CREATE, 0666)
 	if err != nil {
@@ -1526,43 +1524,43 @@ func Touch(filename string) (bool, error) {
 	return true, nil
 }
 
-// mkdir()
+// Mkdir mkdir()
 func Mkdir(filename string, mode os.FileMode) error {
 	return os.Mkdir(filename, mode)
 }
 
-// getcwd()
+// Getcwd getcwd()
 func Getcwd() (string, error) {
 	dir, err := os.Getwd()
 	return dir, err
 }
 
-// realpath()
+// Realpath realpath()
 func Realpath(path string) (string, error) {
 	return filepath.Abs(path)
 }
 
-// basename()
+// Basename basename()
 func Basename(path string) string {
 	return filepath.Base(path)
 }
 
-// chmod()
+// Chmod chmod()
 func Chmod(filename string, mode os.FileMode) bool {
 	return os.Chmod(filename, mode) == nil
 }
 
-// chown()
+// Chown chown()
 func Chown(filename string, uid, gid int) bool {
 	return os.Chown(filename, uid, gid) == nil
 }
 
-// fclose()
+// Fclose fclose()
 func Fclose(handle *os.File) error {
 	return handle.Close()
 }
 
-// filemtime()
+// Filemtime filemtime()
 func Filemtime(filename string) (int64, error) {
 	fd, err := os.Open(filename)
 	if err != nil {
@@ -1576,7 +1574,7 @@ func Filemtime(filename string) (int64, error) {
 	return fileinfo.ModTime().Unix(), nil
 }
 
-// fgetcsv()
+// Fgetcsv fgetcsv()
 func Fgetcsv(handle *os.File, length int, delimiter rune) ([][]string, error) {
 	reader := csv.NewReader(handle)
 	reader.Comma = delimiter
@@ -1584,14 +1582,14 @@ func Fgetcsv(handle *os.File, length int, delimiter rune) ([][]string, error) {
 	return reader.ReadAll()
 }
 
-// glob()
+// Glob glob()
 func Glob(pattern string) ([]string, error) {
 	return filepath.Glob(pattern)
 }
 
 //////////// Variable handling Functions ////////////
 
-// empty()
+// Empty empty()
 func Empty(val interface{}) bool {
 	v := reflect.ValueOf(val)
 	switch v.Kind() {
@@ -1614,7 +1612,7 @@ func Empty(val interface{}) bool {
 	return reflect.DeepEqual(val, reflect.Zero(v.Type()).Interface())
 }
 
-// is_numeric()
+// IsNumeric is_numeric()
 // Numeric strings consist of optional sign, any number of digits, optional decimal part and optional exponential part.
 // Thus +0123.45e6 is a valid numeric value.
 // In PHP hexadecimal (e.g. 0xf4c3b00c) is not supported, but IsNumeric is supported.
@@ -1671,7 +1669,7 @@ func IsNumeric(val interface{}) bool {
 
 //////////// Program execution Functions ////////////
 
-// exec()
+// Exec exec()
 // returnVar, 0: succ; 1: fail
 // Return the last line from the result of the command.
 func Exec(command string, output *[]string, returnVar *int) string {
@@ -1686,9 +1684,8 @@ func Exec(command string, output *[]string, returnVar *int) string {
 	if err != nil {
 		*returnVar = 1
 		return ""
-	} else {
-		*returnVar = 0
 	}
+	*returnVar = 0
 	*output = strings.Split(strings.TrimRight(string(out), "\n"), "\n")
 	if l := len(*output); l > 0 {
 		return (*output)[l-1]
@@ -1696,7 +1693,7 @@ func Exec(command string, output *[]string, returnVar *int) string {
 	return ""
 }
 
-// system()
+// System system()
 // returnVar, 0: succ; 1: fail
 // Returns the last line of the command output on success, and "" on failure.
 func System(command string, returnVar *int) string {
@@ -1747,14 +1744,13 @@ func System(command string, returnVar *int) string {
 		pos := strings.LastIndex(output, "\n")
 		if pos == -1 {
 			return output
-		} else {
-			return output[pos+1:]
 		}
+		return output[pos+1:]
 	}
 	return ""
 }
 
-// passthru()
+// Passthru passthru()
 // returnVar, 0: succ; 1: fail
 func Passthru(command string, returnVar *int) {
 	r, _ := regexp.Compile(`[ ]+`)
@@ -1777,12 +1773,12 @@ func Passthru(command string, returnVar *int) {
 
 //////////// Network Functions ////////////
 
-// gethostname()
+// Gethostname gethostname()
 func Gethostname() (string, error) {
 	return os.Hostname()
 }
 
-// gethostbyname()
+// Gethostbyname gethostbyname()
 // Get the IPv4 address corresponding to a given Internet host name
 func Gethostbyname(hostname string) (string, error) {
 	ips, err := net.LookupIP(hostname)
@@ -1797,7 +1793,7 @@ func Gethostbyname(hostname string) (string, error) {
 	return "", err
 }
 
-// gethostbynamel()
+// Gethostbynamel gethostbynamel()
 // Get a list of IPv4 addresses corresponding to a given Internet host name
 func Gethostbynamel(hostname string) ([]string, error) {
 	ips, err := net.LookupIP(hostname)
@@ -1813,7 +1809,7 @@ func Gethostbynamel(hostname string) ([]string, error) {
 	return nil, err
 }
 
-// gethostbyaddr()
+// Gethostbyaddr gethostbyaddr()
 // Get the Internet host name corresponding to a given IP address
 func Gethostbyaddr(ipAddress string) (string, error) {
 	names, err := net.LookupAddr(ipAddress)
@@ -1823,9 +1819,9 @@ func Gethostbyaddr(ipAddress string) (string, error) {
 	return "", err
 }
 
-// ip2long()
+// IP2long ip2long()
 // IPv4
-func Ip2long(ipAddress string) uint32 {
+func IP2long(ipAddress string) uint32 {
 	ip := net.ParseIP(ipAddress)
 	if ip == nil {
 		return 0
@@ -1833,7 +1829,7 @@ func Ip2long(ipAddress string) uint32 {
 	return binary.BigEndian.Uint32(ip.To4())
 }
 
-// long2ip()
+// Long2ip long2ip()
 // IPv4
 func Long2ip(properAddress uint32) string {
 	ipByte := make([]byte, 4)
@@ -1844,12 +1840,12 @@ func Long2ip(properAddress uint32) string {
 
 //////////// Misc. Functions ////////////
 
-// echo
+// Echo echo
 func Echo(args ...interface{}) {
 	fmt.Print(args...)
 }
 
-// uniqid()
+// Uniqid uniqid()
 func Uniqid(prefix string) string {
 	now := time.Now()
 	sec := now.Unix()
@@ -1857,22 +1853,22 @@ func Uniqid(prefix string) string {
 	return fmt.Sprintf("%s%08x%05x", prefix, sec, usec)
 }
 
-// exit()
+// Exit exit()
 func Exit(status int) {
 	os.Exit(status)
 }
 
-// die()
+// Die die()
 func Die(status int) {
 	os.Exit(status)
 }
 
-// getenv()
+// Getenv getenv()
 func Getenv(varname string) string {
 	return os.Getenv(varname)
 }
 
-// putenv()
+// Putenv putenv()
 // The setting, like "FOO=BAR"
 func Putenv(setting string) error {
 	s := strings.Split(setting, "=")
@@ -1882,7 +1878,7 @@ func Putenv(setting string) error {
 	return os.Setenv(s[0], s[1])
 }
 
-// memory_get_usage()
+// MemoryGetUsage memory_get_usage()
 // return in bytes
 func MemoryGetUsage(realUsage bool) uint64 {
 	stat := new(runtime.MemStats)
@@ -1890,7 +1886,7 @@ func MemoryGetUsage(realUsage bool) uint64 {
 	return stat.Alloc
 }
 
-// version_compare()
+// VersionCompare version_compare()
 // The possible operators are: <, lt, <=, le, >, gt, >=, ge, ==, =, eq, !=, <>, ne respectively.
 // special version strings these are handled in the following order,
 // (any string not found) < dev < alpha = a < beta = b < RC = rc < # < pl = p
@@ -1908,13 +1904,11 @@ func VersionCompare(version1, version2, operator string) bool {
 		if origV1 == "" || origV2 == "" {
 			if origV1 == "" && origV2 == "" {
 				return 0
-			} else {
-				if origV1 == "" {
-					return -1
-				} else {
-					return 1
-				}
 			}
+			if origV1 == "" {
+				return -1
+			}
+			return 1
 		}
 
 		ver1, ver2, compare := "", "", 0
@@ -2097,12 +2091,12 @@ func VersionCompare(version1, version2, operator string) bool {
 	}
 }
 
-// zip_open()
+// ZipOpen zip_open()
 func ZipOpen(filename string) (*zip.ReadCloser, error) {
 	return zip.OpenReader(filename)
 }
 
-// pack()
+// Pack pack()
 func Pack(order binary.ByteOrder, data interface{}) (string, error) {
 	buf := new(bytes.Buffer)
 	err := binary.Write(buf, order, data)
@@ -2113,7 +2107,7 @@ func Pack(order binary.ByteOrder, data interface{}) (string, error) {
 	return buf.String(), nil
 }
 
-// unpack()
+// Unpack unpack()
 func Unpack(order binary.ByteOrder, data string) (interface{}, error) {
 	var result []byte
 	r := bytes.NewReader([]byte(data))
@@ -2125,7 +2119,7 @@ func Unpack(order binary.ByteOrder, data string) (interface{}, error) {
 	return result, nil
 }
 
-// Ternary expression
+// Ternary Ternary expression
 // max := Ternary(a > b, a, b).(int)
 func Ternary(condition bool, trueVal, falseVal interface{}) interface{} {
 	if condition {

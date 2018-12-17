@@ -126,8 +126,8 @@ func TestString(t *testing.T) {
 	tHtmlentities := Htmlentities("<html>hello world </html>")
 	equal(t, `&lt;html&gt;hello world &lt;/html&gt;`, tHtmlentities)
 
-	tHtmlEntityDecode := HtmlEntityDecode("&lt;html&gt;hello world &lt;/html&gt;")
-	equal(t, "<html>hello world </html>", tHtmlEntityDecode)
+	tHTMLEntityDecode := HTMLEntityDecode("&lt;html&gt;hello world &lt;/html&gt;")
+	equal(t, "<html>hello world </html>", tHTMLEntityDecode)
 
 	tWordwrap := Wordwrap("abc hello world xxx", 5, "\n")
 	equal(t, "abc\nhello\nworld\nxxx", tWordwrap)
@@ -199,14 +199,14 @@ func TestArray(t *testing.T) {
 }
 
 func TestUrl(t *testing.T) {
-	tParseUrl, _ := ParseUrl("http://username:password@hostname:9090/path?arg=value#anchor", -1)
-	equal(t, map[string]string{"pass": "password", "path": "/path", "query": "arg=value", "fragment": "anchor", "scheme": "http", "host": "hostname", "port": "9090", "user": "username"}, tParseUrl)
+	tParseURL, _ := ParseURL("http://username:password@hostname:9090/path?arg=value#anchor", -1)
+	equal(t, map[string]string{"pass": "password", "path": "/path", "query": "arg=value", "fragment": "anchor", "scheme": "http", "host": "hostname", "port": "9090", "user": "username"}, tParseURL)
 
-	tUrlEncode := UrlEncode("http://golang.org?x y")
-	equal(t, "http%3A%2F%2Fgolang.org%3Fx+y", tUrlEncode)
+	tURLEncode := URLEncode("http://golang.org?x y")
+	equal(t, "http%3A%2F%2Fgolang.org%3Fx+y", tURLEncode)
 
-	tUrlDecode, _ := UrlDecode("http%3A%2F%2Fgolang.org%3Fx+y")
-	equal(t, "http://golang.org?x y", tUrlDecode)
+	tURLDecode, _ := URLDecode("http%3A%2F%2Fgolang.org%3Fx+y")
+	equal(t, "http://golang.org?x y", tURLDecode)
 
 	tRawurlencode := Rawurlencode("http://golang.org?x y")
 	equal(t, "http%3A%2F%2Fgolang.org%3Fx%20y", tRawurlencode)
@@ -220,8 +220,8 @@ func TestUrl(t *testing.T) {
 	tBase64Decode, _ := Base64Decode("VGhpcyBpcyBhbiBlbmNvZGVkIHN0cmluZw==")
 	equal(t, "This is an encoded string", tBase64Decode)
 
-	tHttpBuildQuery := HttpBuildQuery(map[string][]string{"first": []string{"value"}, "multi": []string{"foo bar", "baz"}})
-	equal(t, "first=value&multi=foo+bar&multi=baz", tHttpBuildQuery)
+	tHTTPBuildQuery := HTTPBuildQuery(map[string][]string{"first": []string{"value"}, "multi": []string{"foo bar", "baz"}})
+	equal(t, "first=value&multi=foo+bar&multi=baz", tHTTPBuildQuery)
 }
 
 func TestMath(t *testing.T) {
@@ -322,8 +322,8 @@ func TestNetwork(t *testing.T) {
 	tGethostname, _ := Gethostname()
 	gt(t, float64(len(tGethostname)), 0)
 
-	tIp2long := Ip2long("8.8.8.8")
-	equal(t, uint32(134744072), tIp2long)
+	tIP2long := IP2long("8.8.8.8")
+	equal(t, uint32(134744072), tIP2long)
 
 	tLong2ip := Long2ip(134744072)
 	equal(t, "8.8.8.8", tLong2ip)
