@@ -1035,6 +1035,7 @@ func Base64Decode(str string) (string, error) {
 	case 3:
 		str += "="
 	}
+
 	data, err := base64.StdEncoding.DecodeString(str)
 	if err != nil {
 		return "", err
