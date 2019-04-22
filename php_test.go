@@ -217,7 +217,7 @@ func TestUrl(t *testing.T) {
 	tBase64Encode := Base64Encode("This is an encoded string")
 	equal(t, "VGhpcyBpcyBhbiBlbmNvZGVkIHN0cmluZw==", tBase64Encode)
 
-	tBase64Decode, _ := Base64Decode("VGhpcyBpcyBhbiBlbmNvZGVkIHN0cmluZw==")
+	tBase64Decode, _ := Base64Decode("VGhpcyBpcyBhbiBlbmNvZGVkIHN0cmluZw")
 	equal(t, "This is an encoded string", tBase64Decode)
 
 	tHTTPBuildQuery := HTTPBuildQuery(map[string][]string{"first": []string{"value"}, "multi": []string{"foo bar", "baz"}})

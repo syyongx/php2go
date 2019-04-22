@@ -1029,6 +1029,12 @@ func Base64Encode(str string) string {
 
 // Base64Decode base64_decode()
 func Base64Decode(str string) (string, error) {
+	switch len(str) % 4 {
+	case 2:
+		str += "=="
+	case 3:
+		str += "="
+	}
 	data, err := base64.StdEncoding.DecodeString(str)
 	if err != nil {
 		return "", err
