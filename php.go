@@ -1251,9 +1251,13 @@ func Rand(min, max int) int {
 	if min > max {
 		panic("min: min cannot be greater than max")
 	}
+	// php: getrandmax()
+	int31 := 1<<31 - 1
+	if max > int31 || min > int31 {
+		panic("min or max connot be greater than " + strconv.Itoa(int31))
+	}
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	n := r.Intn(math.MaxInt32)
-	return n/((math.MaxInt32+1)/(max-min+1)) + min
+	return r.Intn(max+1-min) + min
 }
 
 // Round round()
