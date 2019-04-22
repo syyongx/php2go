@@ -101,6 +101,7 @@ array_key_exists()
 array_combine()
 array_reverse()
 implode()
+in_array()
 ```
 
 ### Mathematical Functions

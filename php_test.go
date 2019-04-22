@@ -196,6 +196,13 @@ func TestArray(t *testing.T) {
 	s3[2] = "z"
 	tarraycombine := ArrayCombine(s2, s3)
 	equal(t, map[interface{}]interface{}{"a": "x", "b": "y", "c": "z"}, tarraycombine)
+
+	tInArray1 := InArray(1, [2]interface{}{"a", 1})                        // array
+	tInArray2 := InArray(1, []interface{}{"a", 1})                         // slice
+	tInArray3 := InArray(1, map[interface{}]interface{}{"a": "c", 1: "d"}) // map
+	equal(t, true, tInArray1)
+	equal(t, true, tInArray2)
+	equal(t, false, tInArray3)
 }
 
 func TestUrl(t *testing.T) {
