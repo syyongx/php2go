@@ -1283,7 +1283,7 @@ func Rand(min, max int) int {
 	if min > max {
 		panic("min: min cannot be greater than max")
 	}
-	// php: getrandmax()
+	// PHP: getrandmax()
 	if int31 := 1<<31 - 1; max > int31 {
 		panic("max: max connot be greater than " + strconv.Itoa(int31))
 	}
@@ -1682,7 +1682,7 @@ func IsNumeric(val interface{}) bool {
 			}
 			return true
 		}
-		// 0-9,Point,Scientific
+		// 0-9, Point, Scientific
 		p, s, l := 0, 0, len(str)
 		for i, v := range str {
 			if v == '.' { // Point
@@ -1710,14 +1710,34 @@ func IsNumeric(val interface{}) bool {
 // Exec exec()
 // returnVar, 0: succ; 1: fail
 // Return the last line from the result of the command.
+// command format eg:
+//   "ls -a"
+//   "/bin/bash -c \"ls -a\""
 func Exec(command string, output *[]string, returnVar *int) string {
-	r, _ := regexp.Compile(`[ ]+`)
-	parts := r.Split(command, -1)
-	var args []string
-	if len(parts) > 1 {
-		args = parts[1:]
+	q := rune(0)
+	parts := strings.FieldsFunc(command, func(r rune) bool {
+		switch {
+		case r == q:
+			q = rune(0)
+			return false
+		case q != rune(0):
+			return false
+		case unicode.In(r, unicode.Quotation_Mark):
+			q = r
+			return false
+		default:
+			return unicode.IsSpace(r)
+		}
+	})
+	// remove " and '
+	for i, v := range parts {
+		f := string(v[0])
+		l := len(v)
+		if l >= 2 && (f == "\"" || f == "'") {
+			parts[i] = v[1 : l-1]
+		}
 	}
-	cmd := exec.Command(parts[0], args...)
+	cmd := exec.Command(parts[0], parts[1:]...)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		*returnVar = 1
@@ -1739,6 +1759,7 @@ func System(command string, returnVar *int) string {
 	var stdBuf bytes.Buffer
 	var err, err1, err2, err3 error
 
+	// split command recommendations refer to Exec().
 	r, _ := regexp.Compile(`[ ]+`)
 	parts := r.Split(command, -1)
 	var args []string
@@ -1791,6 +1812,7 @@ func System(command string, returnVar *int) string {
 // Passthru passthru()
 // returnVar, 0: succ; 1: fail
 func Passthru(command string, returnVar *int) {
+	// split command recommendations refer to Exec().
 	r, _ := regexp.Compile(`[ ]+`)
 	parts := r.Split(command, -1)
 	var args []string

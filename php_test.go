@@ -313,7 +313,7 @@ func TestVariable(t *testing.T) {
 func TestProgramExecution(t *testing.T) {
 	var output []string
 	var retVal int
-	tExec := Exec("ls -l", &output, &retVal)
+	tExec := Exec("/bin/bash -c \"ls -a|grep php\"", &output, &retVal)
 	gt(t, float64(len(tExec)), 0)
 	equal(t, 0, retVal)
 
