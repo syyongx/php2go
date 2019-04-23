@@ -1246,7 +1246,8 @@ func Implode(glue string, pieces []string) string {
 	return buf.String()
 }
 
-// in_array()
+// InArray in_array()
+// haystack supported types: slice, array or map
 func InArray(needle interface{}, haystack interface{}) bool {
 	val := reflect.ValueOf(haystack)
 	switch val.Kind() {
@@ -1277,6 +1278,7 @@ func Abs(number float64) float64 {
 }
 
 // Rand rand()
+// Range: [0, 2147483647]
 func Rand(min, max int) int {
 	if min > max {
 		panic("min: min cannot be greater than max")
