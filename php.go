@@ -1729,7 +1729,7 @@ func Exec(command string, output *[]string, returnVar *int) string {
 			return unicode.IsSpace(r)
 		}
 	})
-	// remove " and '
+	// remove the " and ' on both sides
 	for i, v := range parts {
 		f := string(v[0])
 		l := len(v)
@@ -1762,11 +1762,7 @@ func System(command string, returnVar *int) string {
 	// split command recommendations refer to Exec().
 	r, _ := regexp.Compile(`[ ]+`)
 	parts := r.Split(command, -1)
-	var args []string
-	if len(parts) > 1 {
-		args = parts[1:]
-	}
-	cmd := exec.Command(parts[0], args...)
+	cmd := exec.Command(parts[0], parts[1:]...)
 	stdoutIn, _ := cmd.StdoutPipe()
 	stderrIn, _ := cmd.StderrPipe()
 	stdout := io.MultiWriter(os.Stdout, &stdBuf)
@@ -1815,11 +1811,7 @@ func Passthru(command string, returnVar *int) {
 	// split command recommendations refer to Exec().
 	r, _ := regexp.Compile(`[ ]+`)
 	parts := r.Split(command, -1)
-	var args []string
-	if len(parts) > 1 {
-		args = parts[1:]
-	}
-	cmd := exec.Command(parts[0], args...)
+	cmd := exec.Command(parts[0], parts[1:]...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
