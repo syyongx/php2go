@@ -1731,9 +1731,8 @@ func Exec(command string, output *[]string, returnVar *int) string {
 	})
 	// remove the " and ' on both sides
 	for i, v := range parts {
-		f := string(v[0])
-		l := len(v)
-		if l >= 2 && (f == "\"" || f == "'") {
+		f, l := v[0], len(v)
+		if l >= 2 && (f == '"' || f == '\'') {
 			parts[i] = v[1 : l-1]
 		}
 	}
