@@ -1629,6 +1629,9 @@ func Glob(pattern string) ([]string, error) {
 
 // Empty empty()
 func Empty(val interface{}) bool {
+	if val == nil {
+		return true
+	}
 	v := reflect.ValueOf(val)
 	switch v.Kind() {
 	case reflect.String, reflect.Array:

@@ -308,6 +308,16 @@ func TestVariable(t *testing.T) {
 
 	tIsNumeric = IsNumeric("123456")
 	equal(t, true, tIsNumeric)
+
+	equal(t, true, Empty(nil))
+	equal(t, true, Empty(false))
+	equal(t, true, Empty(0))
+	equal(t, true, Empty(""))
+	equal(t, true, Empty(0.0))
+	equal(t, true, Empty([]int{}))
+	equal(t, true, Empty([0]int{}))
+	equal(t, false, Empty([1]int{}))
+	equal(t, true, Empty(map[int]int{}))
 }
 
 func TestProgramExecution(t *testing.T) {
