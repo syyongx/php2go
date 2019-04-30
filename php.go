@@ -246,6 +246,7 @@ func Strrev(str string) string {
 func ParseStr(encodedString string, result map[string]interface{}) error {
 	// build nested map.
 	var build func(map[string]interface{}, []string, interface{}) error
+
 	build = func(result map[string]interface{}, keys []string, value interface{}) error {
 		length := len(keys)
 		// trim ',"
@@ -288,13 +289,13 @@ func ParseStr(encodedString string, result map[string]interface{}) error {
 			if l := len(children); l > 0 {
 				if child, ok := children[l-1].(map[string]interface{}); ok {
 					if _, ok := child[keys[2]]; !ok {
-						build(child, keys[2:], value)
+						_ = build(child, keys[2:], value)
 						return nil
 					}
 				}
 			}
 			child := map[string]interface{}{}
-			build(child, keys[2:], value)
+			_ = build(child, keys[2:], value)
 			result[key] = append(children, child)
 
 			return nil
@@ -310,10 +311,8 @@ func ParseStr(encodedString string, result map[string]interface{}) error {
 		if !ok {
 			return fmt.Errorf("expected type 'map[string]interface{}' for key '%s', but got '%T'", key, val)
 		}
-		if err := build(children, keys[1:], value); err != nil {
-			return err
-		}
-		return nil
+
+		return build(children, keys[1:], value)
 	}
 
 	// split encodedString.
@@ -912,14 +911,14 @@ func Soundex(str string) string {
 		panic("str: cannot be an empty string")
 	}
 	table := [26]rune{
-		'0', '1', '2', '3', // A, B, C, D
-		'0', '1', '2', // E, F, G
+		'0', '1', '2', '3',           // A, B, C, D
+		'0', '1', '2',                // E, F, G
 		'0',                          // H
 		'0', '2', '2', '4', '5', '5', // I, J, K, L, M, N
 		'0', '1', '2', '6', '2', '3', // O, P, Q, R, S, T
-		'0', '1', // U, V
-		'0', '2', // W, X
-		'0', '2', // Y, Z
+		'0', '1',                     // U, V
+		'0', '2',                     // W, X
+		'0', '2',                     // Y, Z
 	}
 	last, code, small := -1, 0, 0
 	sd := make([]rune, 4)
