@@ -1285,7 +1285,7 @@ func Rand(min, max int) int {
 	}
 	// PHP: getrandmax()
 	if int31 := 1<<31 - 1; max > int31 {
-		panic("max: max connot be greater than " + strconv.Itoa(int31))
+		panic("max: max con not be greater than " + strconv.Itoa(int31))
 	}
 	if min == max {
 		return min
@@ -1902,9 +1902,7 @@ func Echo(args ...interface{}) {
 // Uniqid uniqid()
 func Uniqid(prefix string) string {
 	now := time.Now()
-	sec := now.Unix()
-	usec := now.UnixNano() % 0x100000
-	return fmt.Sprintf("%s%08x%05x", prefix, sec, usec)
+	return fmt.Sprintf("%s%08x%05x", prefix, now.Unix(), now.UnixNano()%0x100000)
 }
 
 // Exit exit()
@@ -1992,7 +1990,7 @@ func VersionCompare(version1, version2, operator string) bool {
 				p2, ver2 = ver2[:n2], ver2[n2+1:]
 			}
 
-			if (p1[0] >= '0' && p1[0] <= '9') && (p2[0] >= '0' && p2[0] <= '9') { // all isdigit
+			if (p1[0] >= '0' && p1[0] <= '9') && (p2[0] >= '0' && p2[0] <= '9') { // all is digit
 				l1, _ := strconv.Atoi(p1)
 				l2, _ := strconv.Atoi(p2)
 				if l1 > l2 {
@@ -2002,10 +2000,10 @@ func VersionCompare(version1, version2, operator string) bool {
 				} else {
 					compare = -1
 				}
-			} else if !(p1[0] >= '0' && p1[0] <= '9') && !(p2[0] >= '0' && p2[0] <= '9') { // all isndigit
+			} else if !(p1[0] >= '0' && p1[0] <= '9') && !(p2[0] >= '0' && p2[0] <= '9') { // all digit
 				compare = special(p1, p2)
-			} else { // part isdigit
-				if p1[0] >= '0' && p1[0] <= '9' { // isdigit
+			} else { // part is digit
+				if p1[0] >= '0' && p1[0] <= '9' { // is digit
 					compare = special("#N#", p2)
 				} else {
 					compare = special(p1, "#N#")
@@ -2050,7 +2048,7 @@ func VersionCompare(version1, version2, operator string) bool {
 			if i+1 < l { // Have the next one
 				next = ver[i+1]
 			}
-			if v == '-' || v == '_' || v == '+' { // repalce '-', '_', '+' to '.'
+			if v == '-' || v == '_' || v == '+' { // replace '-', '_', '+' to '.'
 				if j > 0 && buf[j-1] != '.' {
 					buf[j] = '.'
 					j++
