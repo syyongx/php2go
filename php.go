@@ -912,14 +912,14 @@ func Soundex(str string) string {
 		panic("str: cannot be an empty string")
 	}
 	table := [26]rune{
-		'0', '1', '2', '3',           // A, B, C, D
-		'0', '1', '2',                // E, F, G
+		'0', '1', '2', '3', // A, B, C, D
+		'0', '1', '2', // E, F, G
 		'0',                          // H
 		'0', '2', '2', '4', '5', '5', // I, J, K, L, M, N
 		'0', '1', '2', '6', '2', '3', // O, P, Q, R, S, T
-		'0', '1',                     // U, V
-		'0', '2',                     // W, X
-		'0', '2',                     // Y, Z
+		'0', '1', // U, V
+		'0', '2', // W, X
+		'0', '2', // Y, Z
 	}
 	last, code, small := -1, 0, 0
 	sd := make([]rune, 4)
