@@ -1,7 +1,6 @@
 # php2go
 
 [![GoDoc](https://godoc.org/github.com/syyongx/php2go?status.svg)](https://godoc.org/github.com/syyongx/php2go)
-[![Go Report Card](https://goreportcard.com/badge/github.com/syyongx/php2go)](https://goreportcard.com/report/github.com/syyongx/php2go)
 [![MIT licensed][3]][4]
 
 [3]: https://img.shields.io/badge/license-MIT-blue.svg

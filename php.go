@@ -462,8 +462,8 @@ func Wordwrap(str string, width uint, br string) string {
 	if br == "" {
 		br = "\n"
 	}
-	init := make([]byte, 0, len(str))
-	buf := bytes.NewBuffer(init)
+
+	buf := bytes.NewBuffer(make([]byte, 0, len(str)))
 	var current uint
 	var wordbuf, spacebuf bytes.Buffer
 	for _, char := range str {
@@ -824,7 +824,7 @@ func Levenshtein(str1, str2 string, costIns, costRep, costDel int) int {
 		return -1
 	}
 
-	tmp := make([]int, l2+1)
+	var tmp []int
 	p1 := make([]int, l2+1)
 	p2 := make([]int, l2+1)
 	var c0, c1, c2 int
