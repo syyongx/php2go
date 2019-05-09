@@ -458,61 +458,53 @@ func StrWordCount(str string) []string {
 }
 
 // Wordwrap wordwrap()
-func Wordwrap(str string, width uint, br string) string {
-	if br == "" {
-		br = "\n"
+func Wordwrap(str string, width uint, br string, cut bool) string {
+	strlen := len(str)
+	brlen := len(br)
+	linelen := int(width)
+
+	if strlen == 0 {
+		return ""
+	}
+	if brlen == 0 {
+		panic("break string cannot be empty")
+	}
+	if linelen == 0 && cut {
+		panic("can't force cut when width is zero")
 	}
 
-	buf := bytes.NewBuffer(make([]byte, 0, len(str)))
-	var current uint
-	var wordbuf, spacebuf bytes.Buffer
-	for _, char := range str {
-		if char == '\n' {
-			if wordbuf.Len() == 0 {
-				if current+uint(spacebuf.Len()) > width {
-					current = 0
-				} else {
-					current += uint(spacebuf.Len())
-					spacebuf.WriteTo(buf)
-				}
-				spacebuf.Reset()
-			} else {
-				current += uint(spacebuf.Len() + wordbuf.Len())
-				spacebuf.WriteTo(buf)
-				spacebuf.Reset()
-				wordbuf.WriteTo(buf)
-				wordbuf.Reset()
+	current, laststart, lastspace := 0, 0, 0
+	var ns []byte
+	for current = 0; current < strlen; current ++ {
+		if str[current] == br[0] && current+brlen < strlen && str[current:current+brlen] == br {
+			ns = append(ns, str[laststart:current+brlen]...)
+			current += brlen - 1
+			lastspace = current + 1
+			laststart = lastspace
+		} else if str[current] == ' ' {
+			if current-laststart >= linelen {
+				ns = append(ns, str[laststart:current]...)
+				ns = append(ns, br[:]...)
+				laststart = current + 1
 			}
-			buf.WriteRune(char)
-			current = 0
-		} else if unicode.IsSpace(char) {
-			if spacebuf.Len() == 0 || wordbuf.Len() > 0 {
-				current += uint(spacebuf.Len() + wordbuf.Len())
-				spacebuf.WriteTo(buf)
-				spacebuf.Reset()
-				wordbuf.WriteTo(buf)
-				wordbuf.Reset()
-			}
-			spacebuf.WriteRune(char)
-		} else {
-			wordbuf.WriteRune(char)
-			if current+uint(spacebuf.Len()+wordbuf.Len()) > width && uint(wordbuf.Len()) < width {
-				buf.WriteString(br)
-				current = 0
-				spacebuf.Reset()
-			}
+			lastspace = current
+		} else if current-laststart >= linelen && cut && laststart >= lastspace {
+			ns = append(ns, str[laststart:current]...)
+			ns = append(ns, br[:]...)
+			laststart = current
+			lastspace = current
+		} else if current-laststart >= linelen && laststart < lastspace {
+			ns = append(ns, str[laststart:lastspace]...)
+			ns = append(ns, br[:]...)
+			lastspace++
+			laststart = lastspace
 		}
 	}
 
-	if wordbuf.Len() == 0 {
-		if current+uint(spacebuf.Len()) <= width {
-			spacebuf.WriteTo(buf)
-		}
-	} else {
-		spacebuf.WriteTo(buf)
-		wordbuf.WriteTo(buf)
+	if laststart != current {
+		ns = append(ns, str[laststart:current]...)
 	}
-	return buf.String()
+	return string(ns)
 }
 
 // Strlen strlen()
@@ -824,7 +816,6 @@ func Levenshtein(str1, str2 string, costIns, costRep, costDel int) int {
 		return -1
 	}
 
-	var tmp []int
 	p1 := make([]int, l2+1)
 	p2 := make([]int, l2+1)
 	var c0, c1, c2 int
@@ -850,7 +841,7 @@ func Levenshtein(str1, str2 string, costIns, costRep, costDel int) int {
 			}
 			p2[i2+1] = c0
 		}
-		tmp = p1
+		tmp := p1
 		p1 = p2
 		p2 = tmp
 	}
