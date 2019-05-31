@@ -1,4 +1,4 @@
-# php2go
+# PHP2Go
 
 [![GoDoc](https://godoc.org/github.com/syyongx/php2go?status.svg)](https://godoc.org/github.com/syyongx/php2go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/syyongx/php2go)](https://goreportcard.com/report/github.com/syyongx/php2go)
@@ -201,4 +201,4 @@ Ternary(condition bool, trueVal, falseVal interface{}) interface{}
 ```
 
 ## LICENSE
-php2go source code is licensed under the [MIT](https://github.com/syyongx/php2go/blob/master/LICENSE) Licence.
+PHP2Go source code is licensed under the [MIT](https://github.com/syyongx/php2go/blob/master/LICENSE) Licence.
