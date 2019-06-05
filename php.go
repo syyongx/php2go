@@ -1283,7 +1283,7 @@ func Rand(min, max int) int {
 	}
 	// PHP: getrandmax()
 	if int31 := 1<<31 - 1; max > int31 {
-		panic("max: max con not be greater than " + strconv.Itoa(int31))
+		panic("max: max can not be greater than " + strconv.Itoa(int31))
 	}
 	if min == max {
 		return min
