@@ -615,7 +615,7 @@ func StrShuffle(str string) string {
 func Trim(str string, characterMask ...string) string {
 	mask := ""
 	if len(characterMask) == 0 {
-		mask = " \\t\\n\\r\\0\\x0B"
+		mask = " \t\r\n\f\v"
 	} else {
 		mask = characterMask[0]
 	}
@@ -626,7 +626,7 @@ func Trim(str string, characterMask ...string) string {
 func Ltrim(str string, characterMask ...string) string {
 	mask := ""
 	if len(characterMask) == 0 {
-		mask = " \\t\\n\\r\\0\\x0B"
+		mask = " \t\r\n\f\v"
 	} else {
 		mask = characterMask[0]
 	}
@@ -637,7 +637,7 @@ func Ltrim(str string, characterMask ...string) string {
 func Rtrim(str string, characterMask ...string) string {
 	mask := ""
 	if len(characterMask) == 0 {
-		mask = " \\t\\n\\r\\0\\x0B"
+		mask = " \t\r\n\f\v"
 	} else {
 		mask = characterMask[0]
 	}
