@@ -613,35 +613,26 @@ func StrShuffle(str string) string {
 
 // Trim trim()
 func Trim(str string, characterMask ...string) string {
-	mask := ""
 	if len(characterMask) == 0 {
-		mask = " \t\r\n\f\v"
-	} else {
-		mask = characterMask[0]
+		return strings.TrimSpace(str)
 	}
-	return strings.Trim(str, mask)
+	return strings.Trim(str, characterMask[0])
 }
 
 // Ltrim ltrim()
 func Ltrim(str string, characterMask ...string) string {
-	mask := ""
 	if len(characterMask) == 0 {
-		mask = " \t\r\n\f\v"
-	} else {
-		mask = characterMask[0]
+		return strings.TrimLeftFunc(str, unicode.IsSpace)
 	}
-	return strings.TrimLeft(str, mask)
+	return strings.TrimLeft(str, characterMask[0])
 }
 
 // Rtrim rtrim()
 func Rtrim(str string, characterMask ...string) string {
-	mask := ""
 	if len(characterMask) == 0 {
-		mask = " \t\r\n\f\v"
-	} else {
-		mask = characterMask[0]
+		return strings.TrimRightFunc(str, unicode.IsSpace)
 	}
-	return strings.TrimRight(str, mask)
+	return strings.TrimRight(str, characterMask[0])
 }
 
 // Explode explode()
