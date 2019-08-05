@@ -232,12 +232,6 @@ func TestFile(t *testing.T) {
 	tPathinfo := Pathinfo("/home/go/php2go.go.go", -1)
 	equal(t, map[string]string{"dirname": "/home/go", "basename": "php2go.go.go", "extension": "go", "filename": "php2go.go"}, tPathinfo)
 
-	tDiskFreeSpace, _ := DiskFreeSpace("/")
-	gt(t, float64(tDiskFreeSpace), 0)
-
-	tDiskTotalSpace, _ := DiskTotalSpace("/")
-	gte(t, float64(tDiskTotalSpace), 0)
-
 	wd, _ := os.Getwd()
 	tFilesize, _ := FileSize(wd)
 	gt(t, float64(tFilesize), 0)
