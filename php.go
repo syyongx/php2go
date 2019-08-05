@@ -25,7 +25,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"reflect"
-	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
@@ -1750,9 +1749,29 @@ func System(command string, returnVar *int) string {
 	var stdBuf bytes.Buffer
 	var err, err1, err2, err3 error
 
-	// split command recommendations refer to Exec().
-	r, _ := regexp.Compile(`[ ]+`)
-	parts := r.Split(command, -1)
+	// split command
+	q := rune(0)
+	parts := strings.FieldsFunc(command, func(r rune) bool {
+		switch {
+		case r == q:
+			q = rune(0)
+			return false
+		case q != rune(0):
+			return false
+		case unicode.In(r, unicode.Quotation_Mark):
+			q = r
+			return false
+		default:
+			return unicode.IsSpace(r)
+		}
+	})
+	// remove the " and ' on both sides
+	for i, v := range parts {
+		f, l := v[0], len(v)
+		if l >= 2 && (f == '"' || f == '\'') {
+			parts[i] = v[1 : l-1]
+		}
+	}
 	cmd := exec.Command(parts[0], parts[1:]...)
 	stdoutIn, _ := cmd.StdoutPipe()
 	stderrIn, _ := cmd.StderrPipe()
@@ -1799,9 +1818,28 @@ func System(command string, returnVar *int) string {
 // Passthru passthru()
 // returnVar, 0: succ; 1: fail
 func Passthru(command string, returnVar *int) {
-	// split command recommendations refer to Exec().
-	r, _ := regexp.Compile(`[ ]+`)
-	parts := r.Split(command, -1)
+	q := rune(0)
+	parts := strings.FieldsFunc(command, func(r rune) bool {
+		switch {
+		case r == q:
+			q = rune(0)
+			return false
+		case q != rune(0):
+			return false
+		case unicode.In(r, unicode.Quotation_Mark):
+			q = r
+			return false
+		default:
+			return unicode.IsSpace(r)
+		}
+	})
+	// remove the " and ' on both sides
+	for i, v := range parts {
+		f, l := v[0], len(v)
+		if l >= 2 && (f == '"' || f == '\'') {
+			parts[i] = v[1 : l-1]
+		}
+	}
 	cmd := exec.Command(parts[0], parts[1:]...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
