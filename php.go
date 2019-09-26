@@ -1451,11 +1451,11 @@ func FileExists(filename string) bool {
 
 // IsFile is_file()
 func IsFile(filename string) bool {
-	_, err := os.Stat(filename)
+	fileInfo, err := os.Stat(filename)
 	if err != nil && os.IsNotExist(err) {
 		return false
 	}
-	return true
+	return !fileInfo.IsDir()
 }
 
 // IsDir is_dir()
