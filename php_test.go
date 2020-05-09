@@ -202,6 +202,9 @@ func TestMath(t *testing.T) {
 	tBin2hex, _ := Bin2hex(tDecbin)
 	equal(t, "64", tBin2hex)
 
+	tBin2hex2, _ := Bin2hex("你好世界")
+	equal(t, "e4bda0e5a5bde4b896e7958c", tBin2hex2)
+
 	tHexdec, _ := Hexdec(tBin2hex)
 	equal(t, int64(100), tHexdec)
 
