@@ -7,13 +7,17 @@ import (
 	"os"
 	"reflect"
 	"testing"
+	"time"
 	"unicode/utf8"
 )
 
 func TestTime(t *testing.T) {
 	gt(t, float64(Time()), 1522684800)
 
-	equal(t, "27/04/2018 11:23:14 AM", Date("02/01/2006 15:04:05 PM", 1524799394))
+	// Ensure we take timezones into account
+	_, offset := time.Now().Local().Zone()
+	unix := int64(1524799394)
+	equal(t, "27/04/2018 03:23:14 AM", Date("02/01/2006 15:04:05 PM", unix-int64(offset)))
 
 	tStrtotime, _ := Strtotime("02/01/2006 15:04:05", "02/01/2016 15:04:05")
 	equal(t, int64(1451747045), tStrtotime)
