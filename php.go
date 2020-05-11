@@ -1353,7 +1353,18 @@ func Hex2bin(data string) (string, error) {
 func Bin2hex(str string) (string, error) {
 	i, err := strconv.ParseInt(str, 2, 0)
 	if err != nil {
-		return "", err
+		// If input is not binary number
+		// Fix suggested at https://github.com/syyongx/php2go/issues/25 by https://github.com/tobychui
+		if err.(*strconv.NumError).Err == strconv.ErrSyntax {
+			byteArray := []byte(str)
+			var out string
+			for i := 0; i < len(byteArray); i++ {
+				out += strconv.FormatInt(int64(byteArray[i]), 16)
+			}
+			return out, nil
+		} else {
+			return "", err
+		}
 	}
 	return strconv.FormatInt(i, 16), nil
 }
