@@ -756,7 +756,6 @@ func Md5(str string) string {
 
 // Md5File md5_file()
 func Md5File(path string) (string, error) {
-	func Md5File(path string) (string, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return "", err
@@ -778,7 +777,7 @@ func Md5File(path string) (string, error) {
 		}
 		hash.Write(data)
 	} else {
-		b := make([]byte, 1048576) // 1M
+		b := make([]byte, size)
 		for {
 			n, err := f.Read(b)
 			if err != nil {
@@ -790,7 +789,6 @@ func Md5File(path string) (string, error) {
 	}
 
 	return hex.EncodeToString(hash.Sum(nil)), nil
-}
 }
 
 // Sha1 sha1()
