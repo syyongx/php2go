@@ -756,13 +756,40 @@ func Md5(str string) string {
 
 // Md5File md5_file()
 func Md5File(path string) (string, error) {
-	data, err := ioutil.ReadFile(path)
+	func Md5File(path string) (string, error) {
+	f, err := os.Open(path)
 	if err != nil {
 		return "", err
 	}
+
+	fi, err := f.Stat()
+	if err != nil {
+		return "", err
+	}
+
+	var size int64 = 1048576 // 1M
 	hash := md5.New()
-	hash.Write([]byte(data))
+
+	if fi.Size() < size {
+		data, err := ioutil.ReadFile(path)
+		if err != nil {
+			return "", err
+		}
+		hash.Write(data)
+	} else {
+		b := make([]byte, 1048576) // 1M
+		for {
+			n, err := f.Read(b)
+			if err != nil {
+				break
+			}
+
+			hash.Write(b[:n])
+		}
+	}
+
 	return hex.EncodeToString(hash.Sum(nil)), nil
+}
 }
 
 // Sha1 sha1()
@@ -1963,6 +1990,14 @@ func MemoryGetUsage(realUsage bool) uint64 {
 	stat := new(runtime.MemStats)
 	runtime.ReadMemStats(stat)
 	return stat.Alloc
+}
+
+// MemoryGetPeakUsage memory_get_peak_usage()
+// return in bytes
+func MemoryGetPeakUsage(realUsage bool) uint64 {
+	stat := new(runtime.MemStats)
+	runtime.ReadMemStats(stat)
+	return stat.TotalAlloc
 }
 
 // VersionCompare version_compare()
