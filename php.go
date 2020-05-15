@@ -761,6 +761,7 @@ func Md5File(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	defer f.Close()
 
 	fi, err := f.Stat()
 	if err != nil {
