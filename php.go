@@ -1283,8 +1283,11 @@ func Rand(min, max int) int {
 }
 
 // Round round()
-func Round(value float64) float64 {
-	return math.Floor(value + 0.5)
+// Round(2.5879,2) : 2.59
+// Round(2.5879,3) : 2.588
+func Round(f float64,n int) float64{
+	n10 := math.Pow10(n)
+	return math.Trunc((f+0.5/n10)*n10)/n10
 }
 
 // Floor floor()
