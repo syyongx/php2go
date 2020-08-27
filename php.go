@@ -1546,10 +1546,10 @@ func Rename(oldname, newname string) error {
 // Touch touch()
 func Touch(filename string) (bool, error) {
 	fd, err := os.OpenFile(filename, os.O_RDONLY|os.O_CREATE, 0666)
+	defer fd.Close()
 	if err != nil {
 		return false, err
 	}
-	fd.Close()
 	return true, nil
 }
 
