@@ -530,7 +530,10 @@ func Strstr(haystack string, needle string) string {
 	if idx == -1 {
 		return ""
 	}
-	return haystack[idx+len([]byte(needle))-1:]
+	prefix := []byte(haystack)[0:idx]
+	rs := []rune(string(prefix))
+	runes := []rune(haystack)
+	return string(runes[len(rs):])
 }
 
 // Strtr strtr()
