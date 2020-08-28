@@ -1151,11 +1151,20 @@ func ArrayRand(elements []interface{}) []interface{} {
 }
 
 // ArrayColumn array_column()
-func ArrayColumn(input map[string]map[string]interface{}, columnKey string) []interface{} {
-	columns := make([]interface{}, 0, len(input))
-	for _, val := range input {
+// if empty string field indexKey ,just return setting columnKey value
+func ArrayColumn(input map[string]map[string]interface{}, columnKey string,indexKey string) map[interface{}]interface{} {
+	columns := make(map[interface{}]interface{})
+	for k, val := range input {
 		if v, ok := val[columnKey]; ok {
-			columns = append(columns, v)
+			if len(indexKey) != 0{
+				if vv,ok := val[indexKey];ok{
+					columns[vv] = v
+				}else{
+					columns[k] = v
+				}
+			}else{
+				columns[k] = v
+			}
 		}
 	}
 	return columns
