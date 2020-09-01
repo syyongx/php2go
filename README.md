@@ -11,7 +11,7 @@ Use Golang to implement PHP's common built-in functions. About 140+ functions ha
 
 ## Install
 ```shell
-go get github.com/anyanfei/php2go
+go get github.com/syyongx/php2go
 ```
 
 ## Requirements
