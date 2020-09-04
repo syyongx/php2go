@@ -530,7 +530,10 @@ func Strstr(haystack string, needle string) string {
 	if idx == -1 {
 		return ""
 	}
-	return haystack[idx+len([]byte(needle))-1:]
+	prefix := []byte(haystack)[0:idx]
+	rs := []rune(string(prefix))
+	runes := []rune(haystack)
+	return string(runes[len(rs):])
 }
 
 // Strtr strtr()
@@ -1148,11 +1151,20 @@ func ArrayRand(elements []interface{}) []interface{} {
 }
 
 // ArrayColumn array_column()
-func ArrayColumn(input map[string]map[string]interface{}, columnKey string) []interface{} {
-	columns := make([]interface{}, 0, len(input))
-	for _, val := range input {
+// if empty string field indexKey ,just return setting columnKey value
+func ArrayColumn(input map[string]map[string]interface{}, columnKey string,indexKey string) map[interface{}]interface{} {
+	columns := make(map[interface{}]interface{})
+	for k, val := range input {
 		if v, ok := val[columnKey]; ok {
-			columns = append(columns, v)
+			if len(indexKey) != 0{
+				if vv,ok := val[indexKey];ok{
+					columns[vv] = v
+				}else{
+					columns[k] = v
+				}
+			}else{
+				columns[k] = v
+			}
 		}
 	}
 	return columns
@@ -1283,8 +1295,11 @@ func Rand(min, max int) int {
 }
 
 // Round round()
-func Round(value float64) float64 {
-	return math.Floor(value + 0.5)
+// Round(2.5879,2) : 2.59
+// Round(2.5879,3) : 2.588
+func Round(f float64,n int) float64{
+	n10 := math.Pow10(n)
+	return math.Trunc((f+0.5/n10)*n10)/n10
 }
 
 // Floor floor()
@@ -1543,10 +1558,10 @@ func Rename(oldname, newname string) error {
 // Touch touch()
 func Touch(filename string) (bool, error) {
 	fd, err := os.OpenFile(filename, os.O_RDONLY|os.O_CREATE, 0666)
+	defer fd.Close()
 	if err != nil {
 		return false, err
 	}
-	fd.Close()
 	return true, nil
 }
 
