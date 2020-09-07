@@ -1349,6 +1349,30 @@ func Hex2bin(data string) (string, error) {
 	return strconv.FormatInt(i, 2), nil
 }
 
+// Hex2bin hex2bin() to AscII
+func Hex2binStr(h string)(str string,err error){
+	l  :=  len(h)
+	length,k := l,0
+	bHex := make([]byte,l/2)
+	for i:=0;i<length;i+=2 {
+		if l == 1 {
+			break
+		}
+		//每两个字符转换成一个字节
+		s  := string(h[i:i+2])
+		//十六进制
+		bt,err:= strconv.ParseInt(s,16,32)
+		if err != nil {
+			return "",err
+		}
+		bHex[k] = byte(bt)
+		k++
+		l-=2
+	}
+	return string(bHex),nil
+}
+
+
 // Bin2hex bin2hex()
 func Bin2hex(str string) (string, error) {
 	i, err := strconv.ParseInt(str, 2, 0)
