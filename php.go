@@ -1381,7 +1381,6 @@ func Bin2hex(str string) (string, error) {
 	i, err := strconv.ParseInt(str, 2, 0)
 	if err != nil {
 		// If input is not binary number
-		// Fix suggested at https://github.com/syyongx/php2go/issues/25 by https://github.com/tobychui
 		if err.(*strconv.NumError).Err == strconv.ErrSyntax {
 			byteArray := []byte(str)
 			var out string
