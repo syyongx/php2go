@@ -196,6 +196,7 @@ die()
 getenv()
 putenv()
 memory_get_usage()
+memory_get_peak_usage()
 version_compare()
 zip_open()
 Ternary(condition bool, trueVal, falseVal interface{}) interface{}
