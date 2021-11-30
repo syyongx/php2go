@@ -18,6 +18,7 @@ go get github.com/syyongx/php2go
 Go 1.10 or above.
 
 ## PHP Functions
+
 ### Date/Time Functions
 ```php
 time()
