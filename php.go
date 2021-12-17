@@ -1556,19 +1556,23 @@ func Copy(source, dest string) (bool, error) {
 
 // IsReadable is_readable()
 func IsReadable(filename string) bool {
-	_, err := syscall.Open(filename, syscall.O_RDONLY, 0)
+	fd, err := syscall.Open(filename, syscall.O_RDONLY, 0)
 	if err != nil {
 		return false
 	}
+	syscall.Close(fd)
+
 	return true
 }
 
 // IsWriteable is_writeable()
 func IsWriteable(filename string) bool {
-	_, err := syscall.Open(filename, syscall.O_WRONLY, 0)
+	fd, err := syscall.Open(filename, syscall.O_WRONLY, 0)
 	if err != nil {
 		return false
 	}
+	syscall.Close(fd)
+
 	return true
 }
 
