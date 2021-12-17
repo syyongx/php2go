@@ -1561,7 +1561,6 @@ func IsReadable(filename string) bool {
 		return false
 	}
 	syscall.Close(fd)
-
 	return true
 }
 
@@ -1572,7 +1571,6 @@ func IsWriteable(filename string) bool {
 		return false
 	}
 	syscall.Close(fd)
-
 	return true
 }
 
