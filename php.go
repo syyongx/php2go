@@ -1310,33 +1310,6 @@ func Rand(min, max int) int {
 	return r.Intn(max+1-min) + min
 }
 
-// RandomBytes random_bytes()
-func RandomBytes(length int) ([]byte, error) {
-	bs := make([]byte, length)
-	_, err := crand.Read(bs)
-	if err != nil {
-		return nil, err
-	}
-
-	return bs, nil
-}
-
-// RandomInt random_int()
-func RandomInt(min, max int) (int, error) {
-	if min > max {
-		panic("argument #1 must be less than or equal to argument #2")
-	}
-
-	if min == max {
-		return min, nil
-	}
-	nb, err := crand.Int(crand.Reader, big.NewInt(int64(max+1-min)))
-	if err != nil {
-		return 0, err
-	}
-	return int(nb.Int64()) + min, nil
-}
-
 // Round round()
 func Round(value float64, precision int) float64 {
 	p := math.Pow10(precision)
@@ -1456,6 +1429,35 @@ func BaseConvert(number string, frombase, tobase int) (string, error) {
 // IsNan is_nan()
 func IsNan(val float64) bool {
 	return math.IsNaN(val)
+}
+
+//////////// CSPRNG Functions ////////////
+
+// RandomBytes random_bytes()
+func RandomBytes(length int) ([]byte, error) {
+	bs := make([]byte, length)
+	_, err := crand.Read(bs)
+	if err != nil {
+		return nil, err
+	}
+
+	return bs, nil
+}
+
+// RandomInt random_int()
+func RandomInt(min, max int) (int, error) {
+	if min > max {
+		panic("argument #1 must be less than or equal to argument #2")
+	}
+
+	if min == max {
+		return min, nil
+	}
+	nb, err := crand.Int(crand.Reader, big.NewInt(int64(max+1-min)))
+	if err != nil {
+		return 0, err
+	}
+	return int(nb.Int64()) + min, nil
 }
 
 //////////// Directory/Filesystem Functions ////////////
@@ -2105,7 +2107,7 @@ func VersionCompare(version1, version2, operator string) bool {
 				}
 			} else if !(p1[0] >= '0' && p1[0] <= '9') && !(p2[0] >= '0' && p2[0] <= '9') { // all digit
 				compare = special(p1, p2)
-			} else { // part is digit
+			} else {                              // part is digit
 				if p1[0] >= '0' && p1[0] <= '9' { // is digit
 					compare = special("#N#", p2)
 				} else {

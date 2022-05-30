@@ -137,6 +137,12 @@ base_convert()
 is_nan()
 ```
 
+### CSPRNG Functions
+```php
+random_bytes()
+random_int()
+```
+
 ### Directory/Filesystem Functions
 ```php
 stat()
