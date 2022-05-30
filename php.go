@@ -6,6 +6,7 @@ import (
 	"archive/zip"
 	"bytes"
 	"crypto/md5"
+	crand "crypto/rand"
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/binary"
@@ -18,6 +19,7 @@ import (
 	"io"
 	"io/ioutil"
 	"math"
+	"math/big"
 	"math/rand"
 	"net"
 	"net/url"
@@ -385,7 +387,7 @@ func ParseStr(encodedString string, result map[string]interface{}) error {
 // NumberFormat number_format()
 // decimals: Sets the number of decimal points.
 // decPoint: Sets the separator for the decimal point.
-// thousandsSep: Sets the thousands separator.
+// thousandsSep: Sets the thousands' separator.
 func NumberFormat(number float64, decimals uint, decPoint, thousandsSep string) string {
 	neg := false
 	if number < 0 {
@@ -641,7 +643,7 @@ func Explode(delimiter, str string) []string {
 
 // Chr chr()
 func Chr(ascii int) string {
-	return string(ascii)
+	return string(rune(ascii))
 }
 
 // Ord ord()
@@ -1306,6 +1308,33 @@ func Rand(min, max int) int {
 	}
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	return r.Intn(max+1-min) + min
+}
+
+// RandomBytes random_bytes()
+func RandomBytes(length int) ([]byte, error) {
+	bs := make([]byte, length)
+	_, err := crand.Read(bs)
+	if err != nil {
+		return nil, err
+	}
+
+	return bs, nil
+}
+
+// RandomInt random_int()
+func RandomInt(min, max int) (int, error) {
+	if min > max {
+		panic("argument #1 must be less than or equal to argument #2")
+	}
+
+	if min == max {
+		return min, nil
+	}
+	nb, err := crand.Int(crand.Reader, big.NewInt(int64(max+1-min)))
+	if err != nil {
+		return 0, err
+	}
+	return int(nb.Int64()) + min, nil
 }
 
 // Round round()

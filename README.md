@@ -117,6 +117,8 @@ in_array()
 ```php
 abs()
 rand()
+random_bytes()
+random_int()
 round()
 floor()
 ceil()
