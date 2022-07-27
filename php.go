@@ -2285,3 +2285,23 @@ func Ternary(condition bool, trueVal, falseVal interface{}) interface{} {
 	}
 	return falseVal
 }
+
+// 返回一个数组，该数组包括了所有在 $array1 中但是不在任何其它参数数组中的值
+func ArrayDiff(array1 []string, arrayOthers ...[]string) []string {
+	c := make(map[string]bool, len(array1))
+	for i := 0; i < len(array1); i++ {
+		c[array1[i]] = true
+	}
+	for i := 0; i < len(arrayOthers); i++ {
+		for j := 0; j < len(arrayOthers[i]); j++ {
+			if _, hasKey := c[arrayOthers[i][j]]; hasKey {
+				delete(c, arrayOthers[i][j])
+			}
+		}
+	}
+	result := make([]string, 0)
+	for k := range c {
+		result = append(result, k)
+	}
+	return result
+}
