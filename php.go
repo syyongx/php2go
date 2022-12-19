@@ -17,7 +17,6 @@ import (
 	"hash/crc32"
 	"html"
 	"io"
-	"io/ioutil"
 	"math"
 	"math/big"
 	"math/rand"
@@ -34,6 +33,9 @@ import (
 	"time"
 	"unicode"
 	"unicode/utf8"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 //////////// Date/Time Functions ////////////
@@ -206,12 +208,15 @@ func Lcfirst(str string) string {
 
 // Ucwords ucwords()
 func Ucwords(str string) string {
-	return strings.Title(str)
+	caser := cases.Title(language.English)
+	titleStr := caser.String(str)
+
+	return titleStr
 }
 
 // Substr substr()
 func Substr(str string, start uint, length int) string {
-	if start < 0 || length < -1 {
+	if length < -1 {
 		return str
 	}
 	switch {
@@ -774,7 +779,7 @@ func Md5File(path string) (string, error) {
 	hash := md5.New()
 
 	if fi.Size() < size {
-		data, err := ioutil.ReadFile(path)
+		data, err := os.ReadFile(path)
 		if err != nil {
 			return "", err
 		}
@@ -803,7 +808,7 @@ func Sha1(str string) string {
 
 // Sha1File sha1_file()
 func Sha1File(path string) (string, error) {
-	data, err := ioutil.ReadFile(path)
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return "", err
 	}
@@ -1486,7 +1491,7 @@ func Pathinfo(path string, options int) map[string]string {
 	if ((options & 4) == 4) || ((options & 8) == 8) {
 		basename := ""
 		if (options & 2) == 2 {
-			basename, _ = info["basename"]
+			basename = info["basename"]
 		} else {
 			basename = filepath.Base(path)
 		}
@@ -1520,11 +1525,11 @@ func FileExists(filename string) bool {
 
 // IsFile is_file()
 func IsFile(filename string) bool {
-	_, err := os.Stat(filename)
+	fd, err := os.Stat(filename)
 	if err != nil && os.IsNotExist(err) {
 		return false
 	}
-	return true
+	return !fd.IsDir()
 }
 
 // IsDir is_dir()
@@ -1548,12 +1553,12 @@ func FileSize(filename string) (int64, error) {
 
 // FilePutContents file_put_contents()
 func FilePutContents(filename string, data string, mode os.FileMode) error {
-	return ioutil.WriteFile(filename, []byte(data), mode)
+	return os.WriteFile(filename, []byte(data), mode)
 }
 
 // FileGetContents file_get_contents()
 func FileGetContents(filename string) (string, error) {
-	data, err := ioutil.ReadFile(filename)
+	data, err := os.ReadFile(filename)
 	return string(data), err
 }
 
@@ -1717,13 +1722,13 @@ func Empty(val interface{}) bool {
 // Thus +0123.45e6 is a valid numeric value.
 // In PHP hexadecimal (e.g. 0xf4c3b00c) is not supported, but IsNumeric is supported.
 func IsNumeric(val interface{}) bool {
-	switch val.(type) {
+	switch val := val.(type) {
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
 		return true
 	case float32, float64, complex64, complex128:
 		return true
 	case string:
-		str := val.(string)
+		str := val
 		if str == "" {
 			return false
 		}
@@ -1773,8 +1778,9 @@ func IsNumeric(val interface{}) bool {
 // returnVar, 0: succ; 1: fail
 // Return the last line from the result of the command.
 // command format eg:
-//   "ls -a"
-//   "/bin/bash -c \"ls -a\""
+//
+//	"ls -a"
+//	"/bin/bash -c \"ls -a\""
 func Exec(command string, output *[]string, returnVar *int) string {
 	q := rune(0)
 	parts := strings.FieldsFunc(command, func(r rune) bool {
@@ -2108,7 +2114,7 @@ func VersionCompare(version1, version2, operator string) bool {
 				}
 			} else if !(p1[0] >= '0' && p1[0] <= '9') && !(p2[0] >= '0' && p2[0] <= '9') { // all digit
 				compare = special(p1, p2)
-			} else {                              // part is digit
+			} else { // part is digit
 				if p1[0] >= '0' && p1[0] <= '9' { // is digit
 					compare = special("#N#", p2)
 				} else {
