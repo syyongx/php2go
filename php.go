@@ -33,9 +33,6 @@ import (
 	"time"
 	"unicode"
 	"unicode/utf8"
-
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 )
 
 //////////// Date/Time Functions ////////////
@@ -208,10 +205,36 @@ func Lcfirst(str string) string {
 
 // Ucwords ucwords()
 func Ucwords(str string) string {
-	caser := cases.Title(language.English)
-	titleStr := caser.String(str)
+	isSeparator := func(r rune) bool {
+		if r <= 0x7F {
+			switch {
+			case '0' <= r && r <= '9':
+				return false
+			case 'a' <= r && r <= 'z':
+				return false
+			case 'A' <= r && r <= 'Z':
+				return false
+			case r == '_':
+				return false
+			}
+			return true
+		}
+		if unicode.IsLetter(r) || unicode.IsDigit(r) {
+			return false
+		}
 
-	return titleStr
+		return unicode.IsSpace(r)
+	}
+
+	prev := ' '
+	return strings.Map(func(r rune) rune {
+		if isSeparator(prev) {
+			prev = r
+			return unicode.ToTitle(r)
+		}
+		prev = r
+		return r
+	}, str)
 }
 
 // Substr substr()
@@ -2114,7 +2137,7 @@ func VersionCompare(version1, version2, operator string) bool {
 				}
 			} else if !(p1[0] >= '0' && p1[0] <= '9') && !(p2[0] >= '0' && p2[0] <= '9') { // all digit
 				compare = special(p1, p2)
-			} else { // part is digit
+			} else {
 				if p1[0] >= '0' && p1[0] <= '9' { // is digit
 					compare = special("#N#", p2)
 				} else {
