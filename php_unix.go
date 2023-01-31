@@ -1,5 +1,7 @@
 // php2go functions
 
+// +build linux darwin
+
 package php2go
 
 import (

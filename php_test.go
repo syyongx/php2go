@@ -7,13 +7,17 @@ import (
 	"os"
 	"reflect"
 	"testing"
+	"time"
 	"unicode/utf8"
 )
 
 func TestTime(t *testing.T) {
 	gt(t, float64(Time()), 1522684800)
 
-	equal(t, "27/04/2018 11:23:14 AM", Date("02/01/2006 15:04:05 PM", 1524799394))
+	// Ensure we take timezones into account
+	_, offset := time.Now().Local().Zone()
+	unix := int64(1524799394)
+	equal(t, "27/04/2018 03:23:14 AM", Date("02/01/2006 15:04:05 PM", unix-int64(offset)))
 
 	tStrtotime, _ := Strtotime("02/01/2006 15:04:05", "02/01/2016 15:04:05")
 	equal(t, int64(1451747045), tStrtotime)
@@ -202,6 +206,9 @@ func TestMath(t *testing.T) {
 	tBin2hex, _ := Bin2hex(tDecbin)
 	equal(t, "64", tBin2hex)
 
+	tBin2hex2, _ := Bin2hex("你好世界")
+	equal(t, "e4bda0e5a5bde4b896e7958c", tBin2hex2)
+
 	tHexdec, _ := Hexdec(tBin2hex)
 	equal(t, int64(100), tHexdec)
 
@@ -231,12 +238,6 @@ func TestFile(t *testing.T) {
 
 	tPathinfo := Pathinfo("/home/go/php2go.go.go", -1)
 	equal(t, map[string]string{"dirname": "/home/go", "basename": "php2go.go.go", "extension": "go", "filename": "php2go.go"}, tPathinfo)
-
-	tDiskFreeSpace, _ := DiskFreeSpace("/")
-	gt(t, float64(tDiskFreeSpace), 0)
-
-	tDiskTotalSpace, _ := DiskTotalSpace("/")
-	gte(t, float64(tDiskTotalSpace), 0)
 
 	wd, _ := os.Getwd()
 	tFilesize, _ := FileSize(wd)

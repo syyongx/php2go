@@ -6,6 +6,7 @@ import (
 	"archive/zip"
 	"bytes"
 	"crypto/md5"
+	crand "crypto/rand"
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/binary"
@@ -16,8 +17,8 @@ import (
 	"hash/crc32"
 	"html"
 	"io"
-	"io/ioutil"
 	"math"
+	"math/big"
 	"math/rand"
 	"net"
 	"net/url"
@@ -25,7 +26,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"reflect"
-	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
@@ -55,6 +55,7 @@ func Strtotime(format, strtime string) (int64, error) {
 
 // Date date()
 // Date("02/01/2006 15:04:05 PM", 1524799394)
+// Note: the behavior is inconsistent with php's date function
 func Date(format string, timestamp int64) string {
 	return time.Unix(timestamp, 0).Format(format)
 }
@@ -204,12 +205,41 @@ func Lcfirst(str string) string {
 
 // Ucwords ucwords()
 func Ucwords(str string) string {
-	return strings.Title(str)
+	isSeparator := func(r rune) bool {
+		if r <= 0x7F {
+			switch {
+			case '0' <= r && r <= '9':
+				return false
+			case 'a' <= r && r <= 'z':
+				return false
+			case 'A' <= r && r <= 'Z':
+				return false
+			case r == '_':
+				return false
+			}
+			return true
+		}
+		if unicode.IsLetter(r) || unicode.IsDigit(r) {
+			return false
+		}
+
+		return unicode.IsSpace(r)
+	}
+
+	prev := ' '
+	return strings.Map(func(r rune) rune {
+		if isSeparator(prev) {
+			prev = r
+			return unicode.ToTitle(r)
+		}
+		prev = r
+		return r
+	}, str)
 }
 
 // Substr substr()
 func Substr(str string, start uint, length int) string {
-	if start < 0 || length < -1 {
+	if length < -1 {
 		return str
 	}
 	switch {
@@ -386,7 +416,7 @@ func ParseStr(encodedString string, result map[string]interface{}) error {
 // NumberFormat number_format()
 // decimals: Sets the number of decimal points.
 // decPoint: Sets the separator for the decimal point.
-// thousandsSep: Sets the thousands separator.
+// thousandsSep: Sets the thousands' separator.
 func NumberFormat(number float64, decimals uint, decPoint, thousandsSep string) string {
 	neg := false
 	if number < 0 {
@@ -613,35 +643,26 @@ func StrShuffle(str string) string {
 
 // Trim trim()
 func Trim(str string, characterMask ...string) string {
-	mask := ""
 	if len(characterMask) == 0 {
-		mask = " \\t\\n\\r\\0\\x0B"
-	} else {
-		mask = characterMask[0]
+		return strings.TrimSpace(str)
 	}
-	return strings.Trim(str, mask)
+	return strings.Trim(str, characterMask[0])
 }
 
 // Ltrim ltrim()
 func Ltrim(str string, characterMask ...string) string {
-	mask := ""
 	if len(characterMask) == 0 {
-		mask = " \\t\\n\\r\\0\\x0B"
-	} else {
-		mask = characterMask[0]
+		return strings.TrimLeftFunc(str, unicode.IsSpace)
 	}
-	return strings.TrimLeft(str, mask)
+	return strings.TrimLeft(str, characterMask[0])
 }
 
 // Rtrim rtrim()
 func Rtrim(str string, characterMask ...string) string {
-	mask := ""
 	if len(characterMask) == 0 {
-		mask = " \\t\\n\\r\\0\\x0B"
-	} else {
-		mask = characterMask[0]
+		return strings.TrimRightFunc(str, unicode.IsSpace)
 	}
-	return strings.TrimRight(str, mask)
+	return strings.TrimRight(str, characterMask[0])
 }
 
 // Explode explode()
@@ -651,7 +672,7 @@ func Explode(delimiter, str string) []string {
 
 // Chr chr()
 func Chr(ascii int) string {
-	return string(ascii)
+	return string(rune(ascii))
 }
 
 // Ord ord()
@@ -766,12 +787,38 @@ func Md5(str string) string {
 
 // Md5File md5_file()
 func Md5File(path string) (string, error) {
-	data, err := ioutil.ReadFile(path)
+	f, err := os.Open(path)
 	if err != nil {
 		return "", err
 	}
+	defer f.Close()
+
+	fi, err := f.Stat()
+	if err != nil {
+		return "", err
+	}
+
+	var size int64 = 1048576 // 1M
 	hash := md5.New()
-	hash.Write([]byte(data))
+
+	if fi.Size() < size {
+		data, err := os.ReadFile(path)
+		if err != nil {
+			return "", err
+		}
+		hash.Write(data)
+	} else {
+		b := make([]byte, size)
+		for {
+			n, err := f.Read(b)
+			if err != nil {
+				break
+			}
+
+			hash.Write(b[:n])
+		}
+	}
+
 	return hex.EncodeToString(hash.Sum(nil)), nil
 }
 
@@ -784,7 +831,7 @@ func Sha1(str string) string {
 
 // Sha1File sha1_file()
 func Sha1File(path string) (string, error) {
-	data, err := ioutil.ReadFile(path)
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return "", err
 	}
@@ -1293,8 +1340,9 @@ func Rand(min, max int) int {
 }
 
 // Round round()
-func Round(value float64) float64 {
-	return math.Floor(value + 0.5)
+func Round(value float64, precision int) float64 {
+	p := math.Pow10(precision)
+	return math.Trunc((value+0.5/p)*p) / p
 }
 
 // Floor floor()
@@ -1363,7 +1411,17 @@ func Hex2bin(data string) (string, error) {
 func Bin2hex(str string) (string, error) {
 	i, err := strconv.ParseInt(str, 2, 0)
 	if err != nil {
-		return "", err
+		// If input is not binary number
+		if err.(*strconv.NumError).Err == strconv.ErrSyntax {
+			byteArray := []byte(str)
+			var out string
+			for i := 0; i < len(byteArray); i++ {
+				out += strconv.FormatInt(int64(byteArray[i]), 16)
+			}
+			return out, nil
+		} else {
+			return "", err
+		}
 	}
 	return strconv.FormatInt(i, 16), nil
 }
@@ -1402,6 +1460,35 @@ func IsNan(val float64) bool {
 	return math.IsNaN(val)
 }
 
+//////////// CSPRNG Functions ////////////
+
+// RandomBytes random_bytes()
+func RandomBytes(length int) ([]byte, error) {
+	bs := make([]byte, length)
+	_, err := crand.Read(bs)
+	if err != nil {
+		return nil, err
+	}
+
+	return bs, nil
+}
+
+// RandomInt random_int()
+func RandomInt(min, max int) (int, error) {
+	if min > max {
+		panic("argument #1 must be less than or equal to argument #2")
+	}
+
+	if min == max {
+		return min, nil
+	}
+	nb, err := crand.Int(crand.Reader, big.NewInt(int64(max+1-min)))
+	if err != nil {
+		return 0, err
+	}
+	return int(nb.Int64()) + min, nil
+}
+
 //////////// Directory/Filesystem Functions ////////////
 
 // Stat stat()
@@ -1427,7 +1514,7 @@ func Pathinfo(path string, options int) map[string]string {
 	if ((options & 4) == 4) || ((options & 8) == 8) {
 		basename := ""
 		if (options & 2) == 2 {
-			basename, _ = info["basename"]
+			basename = info["basename"]
 		} else {
 			basename = filepath.Base(path)
 		}
@@ -1461,11 +1548,11 @@ func FileExists(filename string) bool {
 
 // IsFile is_file()
 func IsFile(filename string) bool {
-	_, err := os.Stat(filename)
+	fd, err := os.Stat(filename)
 	if err != nil && os.IsNotExist(err) {
 		return false
 	}
-	return true
+	return !fd.IsDir()
 }
 
 // IsDir is_dir()
@@ -1489,12 +1576,12 @@ func FileSize(filename string) (int64, error) {
 
 // FilePutContents file_put_contents()
 func FilePutContents(filename string, data string, mode os.FileMode) error {
-	return ioutil.WriteFile(filename, []byte(data), mode)
+	return os.WriteFile(filename, []byte(data), mode)
 }
 
 // FileGetContents file_get_contents()
 func FileGetContents(filename string) (string, error) {
-	data, err := ioutil.ReadFile(filename)
+	data, err := os.ReadFile(filename)
 	return string(data), err
 }
 
@@ -1529,19 +1616,21 @@ func Copy(source, dest string) (bool, error) {
 
 // IsReadable is_readable()
 func IsReadable(filename string) bool {
-	_, err := syscall.Open(filename, syscall.O_RDONLY, 0)
+	fd, err := syscall.Open(filename, syscall.O_RDONLY, 0)
 	if err != nil {
 		return false
 	}
+	syscall.Close(fd)
 	return true
 }
 
 // IsWriteable is_writeable()
 func IsWriteable(filename string) bool {
-	_, err := syscall.Open(filename, syscall.O_WRONLY, 0)
+	fd, err := syscall.Open(filename, syscall.O_WRONLY, 0)
 	if err != nil {
 		return false
 	}
+	syscall.Close(fd)
 	return true
 }
 
@@ -1656,13 +1745,13 @@ func Empty(val interface{}) bool {
 // Thus +0123.45e6 is a valid numeric value.
 // In PHP hexadecimal (e.g. 0xf4c3b00c) is not supported, but IsNumeric is supported.
 func IsNumeric(val interface{}) bool {
-	switch val.(type) {
+	switch val := val.(type) {
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
 		return true
 	case float32, float64, complex64, complex128:
 		return true
 	case string:
-		str := val.(string)
+		str := val
 		if str == "" {
 			return false
 		}
@@ -1712,8 +1801,9 @@ func IsNumeric(val interface{}) bool {
 // returnVar, 0: succ; 1: fail
 // Return the last line from the result of the command.
 // command format eg:
-//   "ls -a"
-//   "/bin/bash -c \"ls -a\""
+//
+//	"ls -a"
+//	"/bin/bash -c \"ls -a\""
 func Exec(command string, output *[]string, returnVar *int) string {
 	q := rune(0)
 	parts := strings.FieldsFunc(command, func(r rune) bool {
@@ -1759,9 +1849,29 @@ func System(command string, returnVar *int) string {
 	var stdBuf bytes.Buffer
 	var err, err1, err2, err3 error
 
-	// split command recommendations refer to Exec().
-	r, _ := regexp.Compile(`[ ]+`)
-	parts := r.Split(command, -1)
+	// split command
+	q := rune(0)
+	parts := strings.FieldsFunc(command, func(r rune) bool {
+		switch {
+		case r == q:
+			q = rune(0)
+			return false
+		case q != rune(0):
+			return false
+		case unicode.In(r, unicode.Quotation_Mark):
+			q = r
+			return false
+		default:
+			return unicode.IsSpace(r)
+		}
+	})
+	// remove the " and ' on both sides
+	for i, v := range parts {
+		f, l := v[0], len(v)
+		if l >= 2 && (f == '"' || f == '\'') {
+			parts[i] = v[1 : l-1]
+		}
+	}
 	cmd := exec.Command(parts[0], parts[1:]...)
 	stdoutIn, _ := cmd.StdoutPipe()
 	stderrIn, _ := cmd.StderrPipe()
@@ -1808,9 +1918,28 @@ func System(command string, returnVar *int) string {
 // Passthru passthru()
 // returnVar, 0: succ; 1: fail
 func Passthru(command string, returnVar *int) {
-	// split command recommendations refer to Exec().
-	r, _ := regexp.Compile(`[ ]+`)
-	parts := r.Split(command, -1)
+	q := rune(0)
+	parts := strings.FieldsFunc(command, func(r rune) bool {
+		switch {
+		case r == q:
+			q = rune(0)
+			return false
+		case q != rune(0):
+			return false
+		case unicode.In(r, unicode.Quotation_Mark):
+			q = r
+			return false
+		default:
+			return unicode.IsSpace(r)
+		}
+	})
+	// remove the " and ' on both sides
+	for i, v := range parts {
+		f, l := v[0], len(v)
+		if l >= 2 && (f == '"' || f == '\'') {
+			parts[i] = v[1 : l-1]
+		}
+	}
 	cmd := exec.Command(parts[0], parts[1:]...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -1934,6 +2063,14 @@ func MemoryGetUsage(realUsage bool) uint64 {
 	stat := new(runtime.MemStats)
 	runtime.ReadMemStats(stat)
 	return stat.Alloc
+}
+
+// MemoryGetPeakUsage memory_get_peak_usage()
+// return in bytes
+func MemoryGetPeakUsage(realUsage bool) uint64 {
+	stat := new(runtime.MemStats)
+	runtime.ReadMemStats(stat)
+	return stat.TotalAlloc
 }
 
 // VersionCompare version_compare()
