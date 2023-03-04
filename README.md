@@ -46,7 +46,6 @@ chunk_split()
 str_word_count()
 wordwrap()
 strlen()
-mb_strlen()
 str_repeat()
 strstr()
 strtr()
@@ -76,6 +75,12 @@ levenshtein()
 similar_text()
 soundex()
 parse_str()
+```
+
+### Multibyte String Functions
+```php
+mb_strlen()
+mb_strtoupper()
 ```
 
 ### URL Functions

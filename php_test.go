@@ -87,8 +87,6 @@ func TestString(t *testing.T) {
 
 	equal(t, "z", Chr(122))
 
-	equal(t, 4, MbStrlen("中文 a"))
-
 	equal(t, "<a><br />xxx<br />yy<br />中文<br />n<br />x", Nl2br("<a>\n\rxxx\nyy\r中文\r\nn\r\nx", true))
 
 	equal(t, "---)(5.01文中% cin 	 cba", Strrev("abc \t nic %中文10.5()---"))
@@ -113,6 +111,11 @@ func TestString(t *testing.T) {
 	tParseStr := make(map[string]interface{})
 	_ = ParseStr("f[a][]=m&f[a][]=n", tParseStr)
 	equal(t, "map[f:map[a:[m n]]]", fmt.Sprint(tParseStr))
+}
+
+func TestMb(t *testing.T) {
+	equal(t, 4, MbStrlen("中文 a"))
+	equal(t, "Ä Ö Ü SS A 中文", MbStrtoupper("ä ö ü ß a 中文"))
 }
 
 func TestArray(t *testing.T) {
