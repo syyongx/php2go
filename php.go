@@ -558,10 +558,14 @@ func Strstr(haystack string, needle string) string {
 		return ""
 	}
 	idx := strings.Index(haystack, needle)
-	if idx == -1 {
+	switch idx {
+	case -1:
 		return ""
+	case 0:
+		return haystack
+	default:
+		return haystack[idx+len([]byte(needle))-1:]
 	}
-	return haystack[idx+len([]byte(needle))-1:]
 }
 
 // Strtr strtr()

@@ -43,6 +43,8 @@ func TestString(t *testing.T) {
 
 	equal(t, "@gmail.com", Strstr("xxx@gmail.com", "@"))
 
+	equal(t, "xxx@gmail.com", Strstr("xxx@gmail.com", "xxx@gmail.com"))
+
 	equal(t, "Hello world", Ucfirst("hello world"))
 
 	equal(t, "hello world", Lcfirst("Hello world"))
