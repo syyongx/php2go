@@ -79,6 +79,7 @@ func TestString(t *testing.T) {
 	equal(t, float64(50), percent)
 
 	equal(t, "H416", Soundex("Heilbronn"))
+	equal(t, "M520", Soundex("Mansa"))
 
 	equal(t, 14, len(Uniqid("x")))
 	equal(t, true, bytes.HasPrefix([]byte(Uniqid("x")), []byte("x")))

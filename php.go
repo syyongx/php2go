@@ -14,7 +14,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"golang.org/x/text/cases"
 	"hash/crc32"
 	"html"
 	"io"
@@ -34,6 +33,8 @@ import (
 	"time"
 	"unicode"
 	"unicode/utf8"
+
+	"golang.org/x/text/cases"
 )
 
 //////////// Date/Time Functions ////////////
@@ -950,21 +951,21 @@ func Soundex(str string) string {
 	}
 	table := [26]rune{
 		// A, B, C, D
-		'0', '1', '2', '3',
+		0, '1', '2', '3',
 		// E, F, G
-		'0', '1', '2',
+		0, '1', '2',
 		// H
-		'0',
+		0,
 		// I, J, K, L, M, N
-		'0', '2', '2', '4', '5', '5',
+		0, '2', '2', '4', '5', '5',
 		// O, P, Q, R, S, T
-		'0', '1', '2', '6', '2', '3',
+		0, '1', '2', '6', '2', '3',
 		// U, V
-		'0', '1',
+		0, '1',
 		// W, X
-		'0', '2',
+		0, '2',
 		// Y, Z
-		'0', '2',
+		0, '2',
 	}
 	last, code, small := -1, 0, 0
 	sd := make([]rune, 4)
