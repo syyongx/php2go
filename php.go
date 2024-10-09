@@ -579,7 +579,7 @@ func Strtr(haystack string, params ...interface{}) string {
 		if length == 0 {
 			return haystack
 		}
-		oldnew := make([]string, length*2)
+		oldnew := make([]string, 0, length*2)
 		for o, n := range pairs {
 			if o == "" {
 				return haystack
